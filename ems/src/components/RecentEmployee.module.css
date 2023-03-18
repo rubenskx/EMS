@@ -1,0 +1,23 @@
+.row{
+    border-bottom: 1.5px solid rgb(148, 139, 139);
+}
+
+.row td{
+    padding: 15px;
+}
+
+.header th{
+    padding:20px;
+}
+.header{
+    background-color: #f7f7f8;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 20px;
+}
+
+.table{
+    padding-bottom: 40px;
+}

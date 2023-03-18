@@ -2,6 +2,7 @@ import EmployeesNumber from "../components/EmployeeNumber";
 import MedianAge from "../components/MedianAge";
 import RetiredEmployees from "../components/RetiredEmployees";
 import CalendarComponent from "../components/Calendar";
+import RecentEmployees from "../components/RecentEmployee";
 const HomePage = (props) => {
     return (
       <>
@@ -19,9 +20,12 @@ const HomePage = (props) => {
             </div>
           </div>
           <div className="row mt-5">
-            <div className="col-sm-8"> </div>
+            <div className="col-sm-8">
+              <h3>Recently Viewed</h3>
+              <RecentEmployees />
+            </div>
             <div className="col-sm-4">
-               <h3 style={{textAlign:"center"}}>Calendar</h3>
+              <h3 style={{ textAlign: "center" }}>Calendar</h3>
               <CalendarComponent />
             </div>
           </div>
