@@ -3,12 +3,13 @@ import classes from "./NavigationBar.module.css";
 const NavigationBar = () => {
   return (
     <nav
-      class="navbar bg-dark navbar-expand-lg bg-body-tertiary"
+      class="navbar navbar-expand-lg"
       data-bs-theme="dark"
+      style={{backgroundColor: "black"}}
     >
       <div class="container-fluid">
         <a class="navbar-brand" href="/">
-          Navbar
+            <img src="GEMS.png" className={"img-fluid " + classes.logo}alt="logo"/>
         </a>
         <button
           class="navbar-toggler"

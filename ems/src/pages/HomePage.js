@@ -25,7 +25,7 @@ const HomePage = (props) => {
               <RecentEmployees />
             </div>
             <div className="col-sm-4">
-              <h3 style={{ textAlign: "center" }}>Calendar</h3>
+              <h3>Calendar</h3>
               <CalendarComponent />
             </div>
           </div>

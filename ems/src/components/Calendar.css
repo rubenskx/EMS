@@ -3,10 +3,11 @@
     max-width: 100%;
     background-color: #fff;
     color: #222;
-    border-radius: 8px;
+    border-radius: 10px;
     font-family: 'Raleway', sans-serif;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
     line-height: 1.125em;
+    border:none;
 }
 
 .react-calendar__navigation button {
