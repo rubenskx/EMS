@@ -5,11 +5,15 @@ const NavigationBar = () => {
     <nav
       class="navbar navbar-expand-lg"
       data-bs-theme="dark"
-      style={{backgroundColor: "black"}}
+      style={{ backgroundColor: "black" }}
     >
       <div class="container-fluid">
         <a class="navbar-brand" href="/">
-            <img src="GEMS.png" className={"img-fluid " + classes.logo}alt="logo"/>
+          <img
+            src="GEMS.png"
+            className={"img-fluid " + classes.logo}
+            alt="logo"
+          />
         </a>
         <button
           class="navbar-toggler"
@@ -52,9 +56,12 @@ const NavigationBar = () => {
                     (isActive ? classes.active + " " : " ") + classes.links
                   }
                 >
-                  Notifications
+                  <span>
+                    Notifications <div className={classes.notification}>4</div>
+                  </span>
                 </NavLink>
               </li>
+              <li class="nav-item"></li>
             </ul>
           </div>
         </div>

@@ -17,3 +17,14 @@
 .logo{
     height: 60px;
 }
+
+
+.notification{
+    display: inline;
+    border-radius: 50%;
+    color:white;
+    height:25px;
+    width: 25px;
+    background-color: red;
+    padding:2px 7px;
+}
