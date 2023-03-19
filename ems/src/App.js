@@ -3,6 +3,7 @@ import './App.css';
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./pages/Root";
 import HomePage from './pages/HomePage';
+import ExcelUpload from './pages/ExcelUpload';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -11,6 +12,10 @@ const router = createBrowserRouter([
       {
         index:true,
         element: <HomePage/>,
+      }, 
+      {
+        path:"excel",
+        element: <ExcelUpload/>
       }
     ]
   }
