@@ -39,6 +39,30 @@ const NavigationBar = () => {
                   Home
                 </NavLink>
               </li>
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="/"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  className={classes.dropdown}
+                >
+                  Employees
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" href="/">
+                      Individual Upload
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="/">
+                      Excel Upload
+                    </a>
+                  </li>
+                </ul>
+              </li>
               <li class="nav-item">
                 <NavLink
                   to="/search"

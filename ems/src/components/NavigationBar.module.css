@@ -18,7 +18,12 @@
     height: 60px;
 }
 
-
+.dropdown{
+    padding:none;
+    color: white;
+    text-decoration: none;
+    padding-left:10px;
+}
 .notification{
     display: inline;
     border-radius: 50%;
