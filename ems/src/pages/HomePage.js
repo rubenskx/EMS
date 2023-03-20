@@ -33,7 +33,7 @@ const HomePage = (props) => {
           {time && time.hour >= 11 && time.hour <= 14 && (
             <h1>Good Afternoon, Admin!</h1>
           )}
-          {time && (time.hour >= 14 || time.hour <= 5) && (
+          {time && (time.hour > 14 || time.hour <= 5) && (
             <h1>Good Evening, Admin!</h1>
           )}
           {time && (time.hour >= 6 && time.hour <= 10) && (
