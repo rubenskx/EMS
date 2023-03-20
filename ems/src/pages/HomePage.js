@@ -4,6 +4,26 @@ import RetiredEmployees from "../components/RetiredEmployees";
 import CalendarComponent from "../components/Calendar";
 import RecentEmployees from "../components/RecentEmployee";
 import { useEffect, useState } from "react";
+const employees = [
+  {
+    id: 1,
+    name: "Ruben Sinu",
+    department: "Tech",
+    mobile: "+91 891287893",
+  },
+  {
+    id: 2,
+    name: "Abhay Unni",
+    department: "Tech",
+    mobile: "+91 891287893",
+  },
+  {
+    id: 3,
+    name: "Vishnu V Nair",
+    department: "Tech",
+    mobile: "+91 891287893",
+  },
+];
 
 const HomePage = (props) => {
   const [time, setTime] = useState("undefined");
@@ -52,7 +72,7 @@ const HomePage = (props) => {
         <div className="row mt-5">
           <div className="col-lg-8">
             <h3>Recently Viewed</h3>
-            <RecentEmployees />
+            <RecentEmployees employees={employees}/>
           </div>
           <div className="col-lg-4">
             <h3>Calendar</h3>

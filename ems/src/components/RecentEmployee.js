@@ -1,26 +1,7 @@
 import { Fragment } from "react";
 import classes from "./RecentEmployee.module.css";
 import Card from "../UI/Card";
-const employees = [
-  {
-    id: 1,
-    name: "Ruben Sinu",
-    department: "Tech",
-    mobile: "+91 891287893",
-  },
-  {
-    id: 2,
-    name: "Abhay Unni",
-    department: "Tech",
-    mobile: "+91 891287893",
-  },
-  {
-    id: 3,
-    name: "Vishnu V Nair",
-    department: "Tech",
-    mobile: "+91 891287893",
-  },
-];
+
 const RecentEmployees = props => {
     return (
       <Fragment>
@@ -33,7 +14,7 @@ const RecentEmployees = props => {
                 <th>Department</th>
                 <th>Mobile No</th>
               </tr>
-              {employees.map((ele, id) => (
+              {props.employees.map((ele, id) => (
                 <tr className={classes.row}>
                   <td>{id}</td>
                   <td>{ele.name}</td>
