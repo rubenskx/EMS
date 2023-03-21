@@ -1,11 +1,13 @@
 import DragAndDrop from "../components/DragAndDrop";
 import { Fragment, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import RecentEmployees from "../components/RecentEmployee";
 import ButtonUI from "../UI/ButtonUI"
 const XLSX = require("xlsx");
 
 const ExcelUpload = (props) => {
   const [exceldata, setData] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     console.log(exceldata)
   }, [exceldata]);
@@ -29,6 +31,26 @@ const ExcelUpload = (props) => {
     };
     reader.readAsArrayBuffer(file);
   };
+
+  const sendDataHandler = async () => {
+    console.log("hello");
+    console.log(exceldata);
+    const url = "http://localhost:7000/excel";
+    const dummy = {id:1};
+    const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(exceldata),
+  });
+
+
+  if (!response.ok) {
+    console.log("error");
+  }
+  navigate("/");
+  }
   return (
     <Fragment>
       <DragAndDrop onFileDrop={submitHandler} />
@@ -36,7 +58,7 @@ const ExcelUpload = (props) => {
         <div className="container mt-5">
           <h2>{`Found ${exceldata.length} Employees.`}</h2>
           <div style={{ textAlign: "right" }}>
-            <ButtonUI>
+            <ButtonUI onClick={sendDataHandler}>
               Submit
             </ButtonUI>
           </div>
@@ -47,3 +69,4 @@ const ExcelUpload = (props) => {
   );
 };
 export default ExcelUpload;
+

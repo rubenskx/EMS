@@ -15,7 +15,7 @@ const router = createBrowserRouter([
       }, 
       {
         path:"excel",
-        element: <ExcelUpload/>
+        element: <ExcelUpload/>,
       }
     ]
   }
