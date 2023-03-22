@@ -65,7 +65,7 @@ const NavigationBar = () => {
               </li>
               <li class="nav-item">
                 <NavLink
-                  to="/search"
+                  to="/search-form"
                   className={({ isActive }) =>
                     (isActive ? classes.active + " " : " ") + classes.links
                   }

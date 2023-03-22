@@ -17,6 +17,18 @@ app.post("/excel", async(req,res) => {
         }
 })
 
+
+app.post("/search", async(req,res)=> {
+  try{
+  const data = req.body;
+  console.log(data);
+  res.status(200).json({ message: "Success", event: data});
+  } catch(error){
+    res.status(404).json({ message: error});
+  }
+
+})
+
 app.listen(7000, () => {
   console.log("LISTENING ON PORT 7000!");
 });
