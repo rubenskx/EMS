@@ -3,6 +3,7 @@ import MedianAge from "../components/MedianAge";
 import RetiredEmployees from "../components/RetiredEmployees";
 import CalendarComponent from "../components/Calendar";
 import RecentEmployees from "../components/RecentEmployee";
+import Spinner from "../UI/Spinner";
 import { useEffect, useState } from "react";
 const employees = [
   {
@@ -59,6 +60,7 @@ const HomePage = (props) => {
           {time && (time.hour >= 6 && time.hour <= 10) && (
             <h1>Good Morning, Admin!</h1>
           )}
+          {time === 'undefined' && <Spinner/>}
           <div className="col-sm-4">
             <EmployeesNumber />
           </div>

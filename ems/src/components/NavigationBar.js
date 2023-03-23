@@ -52,14 +52,17 @@ const NavigationBar = () => {
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <a class="dropdown-item" href="/">
-                      Individual Upload
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="/excel">
-                      Excel Upload
-                    </a>
+                    <div class="dropdown-item">
+                      <NavLink
+                        to="/excel"
+                        className={({ isActive }) =>
+                          (isActive ? classes.active + " " : " ") +
+                          classes.links
+                        }
+                      >
+                        Excel
+                      </NavLink>
+                    </div>
                   </li>
                 </ul>
               </li>

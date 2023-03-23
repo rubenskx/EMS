@@ -44,3 +44,17 @@
 .actions button[type='button']:hover {
     background-color: var(--color-gray-800);
 }
+
+.toggler{
+    background-color: blue;
+    color:white;
+    padding:none;
+    border-radius: 5px;
+    max-height: 40px;
+}
+
+.adjust{
+    margin-left: 10px;
+    margin-top: 8px;
+    justify-content: center;
+}
