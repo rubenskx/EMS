@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import ExcelUpload from "./pages/ExcelUpload";
 import SearchPage from "./pages/SearchPage";
+import {action as searchFormAction} from "./components/SearchForm";
 import RequireAuth from "./components/RequireAuth";
 const router = createBrowserRouter([
   {
@@ -19,13 +20,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <RequireAuth />
-    ,
+    element: <RequireAuth />,
     children: [
       {
         index: true,
-        element:<HomePage />
-  
+        element: <HomePage />,
       },
       {
         path: "excel",
@@ -34,6 +33,7 @@ const router = createBrowserRouter([
       {
         path: "search-form",
         element: <SearchPage />,
+        action: searchFormAction,
       },
     ],
   },

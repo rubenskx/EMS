@@ -1,3 +1,6 @@
+.header{
+    text-align: center;
+}
 .form {
     max-width: 40rem;
     margin: 2rem auto;
@@ -57,4 +60,8 @@
     margin-left: 10px;
     margin-top: 8px;
     justify-content: center;
+}
+
+.warn{
+    color:red;
 }

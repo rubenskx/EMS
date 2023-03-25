@@ -1,77 +1,112 @@
-import { Form, useNavigate, useNavigation, json } from "react-router-dom";
+import {
+  Form,
+  useNavigate,
+  useNavigation,
+  useActionData,
+} from "react-router-dom";
 import Card from "../UI/Card";
 import classes from "./SearchForm.module.css";
 import { useState } from "react";
+import RecentEmployees from "./RecentEmployee";
+import ButtonUI from "../UI/ButtonUI";
+import Select from "react-select";
+import options from "../utils/fieldOptions";
+const XLSX = require("xlsx");
+
+
 
 function SearchForm({ method, event }) {
   const navigation = useNavigation();
   const navigate = useNavigate();
   const isSubmitting = navigation.state === "submitting";
-  const [searchResults, setSearchResults] = useState("undefined");
+  const data = useActionData();
   const [toggler, setToggler] = useState(0);
   const [displayCourse, setDisplayCourse] = useState(false);
+  const [filterOptions, setFilterOptions] = useState([options[1]]);
   function cancelHandler() {
     navigate("..");
   }
+  
+  const excelGenerator = () => {
+    if(data && data.result){
+    const { employees }=  data.result;
+    console.log(filterOptions);
+    console.log(employees);
+    const filteredArray = employees.map((obj) =>
+      Object.keys(obj)
+        .filter((key) => filterOptions.includes(key))
+        .reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {})
+    );
+        console.log(filteredArray);
+         const workSheet = XLSX.utils.json_to_sheet(filteredArray);
+         const workBook = XLSX.utils.book_new();
 
-  async function handleSubmit(event) {
-    try {
-      event.preventDefault();
-      const data = new FormData(event.target);
-
-      const eventData = {
-        title: data.get("title"),
-        image: data.get("image"),
-        date: data.get("date"),
-        description: data.get("description"),
-      };
-
-      console.log(eventData);
-      let url = "http://localhost:7000/search";
-      console.log(url);
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      });
-
-      if (response.status === 422) {
-        return response;
-      }
-
-      if (!response.ok) {
-        throw json({ message: "Could not save event." }, { status: 500 });
-      }
-      const resultMessage = await response.json();
-      console.log(resultMessage.message);
-      setSearchResults(resultMessage.message);
-    } catch (error) {
-      console.log(error);
+         XLSX.utils.book_append_sheet(workBook, workSheet, "SEARCH RESULTS");
+         XLSX.write(workBook, { bookType: "xlsx", type: "buffer" });
+         XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+         XLSX.writeFile(workBook, "search.xlsx");
+        
+    }else{
+      return;
     }
   }
 
+
+  const handleChange = (selectedOptions) => {
+    let array = [];
+    selectedOptions.map((ele) => array.push(ele.value));
+    setFilterOptions(array);
+  };
+
+
   return (
     <>
-      {searchResults === "undefined" && (
-        <Form className={classes.form} onSubmit={handleSubmit}>
+      {data && data.result && (
+        <>
+          <div className="container mt-3">
+            <div>
+              <h1 className={classes.header}>Search Results</h1>
+              <p>Filter the results.</p>
+              <Select
+                defaultValue={[options[1]]}
+                isMulti
+                name="colors"
+                options={options}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                onChange={handleChange}
+              />
+              <div style={{ textAlign: "right" }} className="mt-2">
+                <ButtonUI onClick={excelGenerator}>Export as Excel</ButtonUI>
+              </div>
+            </div>
+            <RecentEmployees employees={data.result.employees} />
+          </div>
+        </>
+      )}
+      {(!data || !data.result) && (
+        <Form className={classes.form} method={"POST"}>
           <Card>
             <h2>Search</h2>
             <p>
               <label htmlFor="title">Name (Keywords) </label>
               <input
-                id="name"
+                id="title"
                 type="text"
-                name="name"
-                required
+                name="title"
                 defaultValue={event ? event.title : ""}
               />
             </p>
             <p>
-              <label htmlFor="image">Gender</label>
-              <select class="form-select" aria-label="Default select example">
-                <option selected>Choose...</option>
+              <label htmlFor="gender">Gender</label>
+              <select
+                name="gender"
+                class="form-select"
+                aria-label="Default select example"
+              >
+                <option disabled selected value>
+                  -- select an option --
+                </option>
                 <option value="1">Male</option>
                 <option value="2">Female</option>
                 <option value="3">Unspecified</option>
@@ -83,7 +118,6 @@ function SearchForm({ method, event }) {
                 id="department"
                 type="text"
                 name="department"
-                required
                 defaultValue=""
               />
             </p>
@@ -94,7 +128,6 @@ function SearchForm({ method, event }) {
                   id="date"
                   type="date"
                   name="date"
-                  required
                   defaultValue={event ? event.date : ""}
                 />
               </p>
@@ -104,31 +137,31 @@ function SearchForm({ method, event }) {
                   <input
                     class="form-check-input"
                     type="radio"
-                    name="flexRadioDefault"
-                    id="flexRadioDefault1"
+                    name="btd"
+                    id="btd"
                     style={{ width: "10%" }}
                   />
-                  <label class="form-check-label" for="flexRadioDefault1">
+                  <label class="form-check-label" for="btd">
                     Before this date
                   </label>
                   <input
                     class="form-check-input"
                     type="radio"
-                    name="flexRadioDefault"
-                    id="flexRadioDefault1"
+                    name="atd"
+                    id="atd"
                     style={{ width: "10%" }}
                   />
-                  <label class="form-check-label" for="flexRadioDefault1">
+                  <label class="form-check-label" for="atd">
                     After this date
                   </label>
                   <input
                     class="form-check-input"
                     type="radio"
-                    name="flexRadioDefault"
-                    id="flexRadioDefault1"
+                    name="otd"
+                    id="otd"
                     style={{ width: "10%" }}
                   />
-                  <label class="form-check-label" for="flexRadioDefault1">
+                  <label class="form-check-label" for="otd">
                     On this date
                   </label>
                 </div>
@@ -140,7 +173,6 @@ function SearchForm({ method, event }) {
                 id="name"
                 type="text"
                 name="previousDesignation"
-                required
                 defaultValue=""
               />
             </p>
@@ -150,7 +182,6 @@ function SearchForm({ method, event }) {
                 id="name"
                 type="text"
                 name="currentDesignation"
-                required
                 defaultValue=""
               />
             </p>
@@ -188,7 +219,7 @@ function SearchForm({ method, event }) {
                       name="years"
                       type="number"
                       class="form-control"
-                      id="floatingPassword"
+                      id="years"
                       placeholder="Years.."
                     />
                   </>
@@ -202,7 +233,7 @@ function SearchForm({ method, event }) {
                       name="months"
                       type="number"
                       class="form-control"
-                      id="floatingPassword"
+                      id="months"
                       placeholder="Months.."
                     />
                   </>
@@ -210,8 +241,9 @@ function SearchForm({ method, event }) {
               </div>
             </p>
             <p>
-              <label htmlFor="image">Qualification</label>
+              <label htmlFor="qualify">Qualification</label>
               <select
+                name="qualify"
                 class="form-select"
                 aria-label="Default select example"
                 onClick={() => setDisplayCourse(true)}
@@ -271,7 +303,84 @@ function SearchForm({ method, event }) {
                   placeholder="DA 76%"
                 />
               </div>
+              <p>
+                <label htmlFor="wef_date">WEF</label>
+                <input id="wef" type="date" name="wef_date" />
+              </p>
             </div>
+            <div className="row">
+              {data && data.salary && (
+                <p className={classes.warn}>{data.salary}</p>
+              )}
+              <div className={"col-lg-6"}>
+                <label htmlFor="salary_less" style={{ display: "inline" }}>
+                  Salary Less Than:
+                </label>
+                <input
+                  name="salary_less"
+                  type="number"
+                  class="form-control"
+                  id="salary_less"
+                  placeholder="Enter..."
+                  min="1"
+                />
+              </div>
+              <div className={"col-lg-6"}>
+                <label htmlFor="salary_greater" style={{ display: "inline" }}>
+                  Salary Greater Than:
+                </label>
+                <input
+                  name="salary_greater"
+                  type="number"
+                  class="form-control"
+                  id="salary_greater"
+                  placeholder="Enter..."
+                  min="1"
+                />
+              </div>
+            </div>
+            <p className="mt-2">
+              <label htmlFor="remarks">Remarks (Keywords) </label>
+              <textarea
+                id="remarks"
+                type="text"
+                name="remarks"
+                defaultValue=""
+              />
+            </p>
+            <p>
+              <label htmlFor="head">Head Engineer</label>
+              <select
+                class="form-select"
+                name="head"
+                aria-label="Default select example"
+              >
+                <option selected>Choose...</option>
+                <option value="1">SHINTO PAUL</option>
+                <option value="2">BK GOPAKUMAR</option>
+              </select>
+            </p>
+            <p>
+              <label htmlFor="director">Director</label>
+              <select
+                class="form-select"
+                aria-label="Default select example"
+                name="director"
+              >
+                <option selected>Choose...</option>
+                <option value="1">SUREENDRAN MM</option>
+                <option value="2">AJI KTK</option>
+              </select>
+            </p>
+            <p className="mt-2">
+              <label htmlFor="project">Project Name (Keywords) </label>
+              <textarea
+                id="project"
+                type="text"
+                name="project"
+                defaultValue=""
+              />
+            </p>
             <div className={classes.actions}>
               <button
                 type="button"
@@ -287,9 +396,50 @@ function SearchForm({ method, event }) {
           </Card>
         </Form>
       )}
-      {searchResults !== "undefined" && <p>{searchResults}</p>}
     </>
   );
 }
 
 export default SearchForm;
+
+export async function action({ request, params }) {
+  const method = request.method;
+  const data = await request.formData();
+  var object = {};
+  data.forEach((value, key) => (object[key] = value));
+  console.log(object);
+  // console.log(object.title);
+  let errors = {};
+  if (
+    object.salary_greater.length > 0 &&
+    object.salary_less.length > 0 &&
+    object.salary_greater < object.salary_less
+  ) {
+    errors.salary = "The range for salary provided is incorrect.";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return errors;
+  }
+  let url = "http://localhost:7000/search-form";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(object),
+  });
+
+  if(response.status === 422){
+    errors.top= response.message;
+  }
+  if(!response.ok){
+    errors.top = "The database cannot be accessed now. Try again!";
+    return errors;
+  }
+
+  const result = await response.json();
+  console.log(result);
+  errors.result = result;
+  return errors;
+}
