@@ -13,6 +13,7 @@ const RecentEmployees = props => {
                 <th>Name</th>
                 <th>Department</th>
                 <th>Mobile No</th>
+                {props.addArray && props.addArray.map((ele) => <th>{ele}</th>)}
               </tr>
               {props.employees.map((ele, id) => (
                 <tr className={classes.row}>
@@ -20,6 +21,8 @@ const RecentEmployees = props => {
                   <td>{ele.name}</td>
                   <td>{ele.department}</td>
                   <td>{ele.mobile}</td>
+                  {props.addArray &&
+                    props.addArray.map((keys) => <td>{ele[keys]}</td>)}
                 </tr>
               ))}
             </table>

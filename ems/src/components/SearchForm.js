@@ -11,7 +11,8 @@ import RecentEmployees from "./RecentEmployee";
 import ButtonUI from "../UI/ButtonUI";
 import Select from "react-select";
 import options from "../utils/fieldOptions";
-const XLSX = require("xlsx");
+import ExportExcel from "../utils/ExportExcel";
+
 
 
 
@@ -38,13 +39,7 @@ function SearchForm({ method, event }) {
         .reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {})
     );
         console.log(filteredArray);
-         const workSheet = XLSX.utils.json_to_sheet(filteredArray);
-         const workBook = XLSX.utils.book_new();
-
-         XLSX.utils.book_append_sheet(workBook, workSheet, "SEARCH RESULTS");
-         XLSX.write(workBook, { bookType: "xlsx", type: "buffer" });
-         XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
-         XLSX.writeFile(workBook, "search.xlsx");
+        ExportExcel(filteredArray);
         
     }else{
       return;

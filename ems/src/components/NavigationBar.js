@@ -63,6 +63,17 @@ const NavigationBar = () => {
                         Excel
                       </NavLink>
                     </div>
+                    <div class="dropdown-item">
+                      <NavLink
+                        to="/increment"
+                        className={({ isActive }) =>
+                          (isActive ? classes.active + " " : " ") +
+                          classes.links
+                        }
+                      >
+                        Salary Increment
+                      </NavLink>
+                    </div>
                   </li>
                 </ul>
               </li>

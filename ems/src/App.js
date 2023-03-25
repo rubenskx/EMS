@@ -7,6 +7,8 @@ import ExcelUpload from "./pages/ExcelUpload";
 import SearchPage from "./pages/SearchPage";
 import {action as searchFormAction} from "./components/SearchForm";
 import RequireAuth from "./components/RequireAuth";
+import NotificationPage, {loader as notificationsLoader} from "./pages/NotificationPage";
+import SalaryIncrement from "./pages/SalaryIncrement";
 const router = createBrowserRouter([
   {
     path: "login",
@@ -34,6 +36,15 @@ const router = createBrowserRouter([
         path: "search-form",
         element: <SearchPage />,
         action: searchFormAction,
+      },
+      {
+        path: "increment",
+        element: <SalaryIncrement />,
+      },
+      {
+        path: "notifications",
+        element: <NotificationPage />,
+        loader: notificationsLoader,
       },
     ],
   },
