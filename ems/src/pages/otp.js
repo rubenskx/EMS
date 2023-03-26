@@ -1,5 +1,5 @@
 
-import './otp.scss';
+import classes from './otp.module.scss';
 import React, { useState } from 'react';
 import OtpInput from 'react-otp-input';
 
@@ -13,16 +13,16 @@ function Otp(){
     }
 
     return(
-        <div className="maincard2">
-            <div className="title2">
-                <h1 className="logh2">Verify OTP</h1>
+        <div className={classes.maincard2}>
+            <div className={classes.title2}>
+                <h1 className={classes.logh2}>Verify OTP</h1>
             </div>
             <div>
-                <p className="fpusername">An OTP has been sent to your mail id. 
+                <p className={classes.fpusername}>An OTP has been sent to your mail id. 
                 Please enter the OTP in the space provided and click Verify.</p>
-                <p className="note1">Note: Do not refresh the page !</p>
+                <p className={classes.note1}>Note: Do not refresh the page !</p>
             </div>
-            <div className='otpinput'>
+            <div className={classes.otpinput}>
             <OtpInput
       value={otp}
       onChange={setOtp}
@@ -31,7 +31,7 @@ function Otp(){
       renderInput={(props) => <input {...props} />}
     />
     </div>
-    <button className='button2' onClick={handleClick}><span>Verify</span></button>
+    <button className={classes.button2} onClick={handleClick}><span>Verify</span></button>
         </div>
             
         
