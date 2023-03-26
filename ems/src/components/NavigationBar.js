@@ -74,6 +74,17 @@ const NavigationBar = () => {
                         Salary Increment
                       </NavLink>
                     </div>
+                    <div class="dropdown-item">
+                      <NavLink
+                        to="/upload"
+                        className={({ isActive }) =>
+                          (isActive ? classes.active + " " : " ") +
+                          classes.links
+                        }
+                      >
+                        Individual Upload
+                      </NavLink>
+                    </div>
                   </li>
                 </ul>
               </li>

@@ -63,6 +63,23 @@ app.get("/increment", async(req,res) => {
   res.status(200).json({ message: "Success", employees});
 })
 
+app.post("/inform", async (req, res) => {
+  const data = req.body;
+  console.log(data);
+  res.status(200).json({ message: "Success"});
+});
+
+app.put("/notifications/:id", async(req,res) => {
+  const { id } = req.params;
+  console.log(id);
+  res.status(200).json({ message: "Success"});
+})
+
+app.post("/upload", async (req, res) => {
+  const data = req.body;
+  console.log("Form Data",data);
+  res.status(200).json({ message: "Success" });
+}); 
 app.listen(7000, () => {
   console.log("LISTENING ON PORT 7000!");
 });

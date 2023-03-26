@@ -7,8 +7,12 @@ import ExcelUpload from "./pages/ExcelUpload";
 import SearchPage from "./pages/SearchPage";
 import {action as searchFormAction} from "./components/SearchForm";
 import RequireAuth from "./components/RequireAuth";
-import NotificationPage, {loader as notificationsLoader} from "./pages/NotificationPage";
+import NotificationPage, {
+  loader as notificationsLoader,
+} from "./pages/NotificationPage";
 import SalaryIncrement from "./pages/SalaryIncrement";
+import IndividualUpload, {action as addEmployeeAction} from "./pages/IndividualUpload";
+
 const router = createBrowserRouter([
   {
     path: "login",
@@ -45,6 +49,11 @@ const router = createBrowserRouter([
         path: "notifications",
         element: <NotificationPage />,
         loader: notificationsLoader,
+      },
+      {
+        path: "upload",
+        element: <IndividualUpload />,
+        action: addEmployeeAction,
       },
     ],
   },

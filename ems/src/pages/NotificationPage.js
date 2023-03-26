@@ -42,3 +42,4 @@ async function loadNotifs() {
     return resData.array;
   }
 }
+
