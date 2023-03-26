@@ -3,7 +3,7 @@ import { redirect } from "react-router-dom";
 import Upload from "../components/Upload";
 
 const SearchPage = (props) => {
-  return <Upload method="POST" />;
+  return <Upload method="POST"  />;
 };
 
 export default SearchPage;

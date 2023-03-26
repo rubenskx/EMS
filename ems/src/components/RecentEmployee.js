@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import classes from "./RecentEmployee.module.css";
 import Card from "../UI/Card";
+import { NavLink } from "react-router-dom";
 
 const RecentEmployees = props => {
     return (
@@ -8,7 +9,7 @@ const RecentEmployees = props => {
         <Card>
           <div className={classes.table}>
             <table>
-              <tr className={classes.row + " " + classes.header}>
+              <tr className={classes.row + `` + classes.header}>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Department</th>
@@ -18,7 +19,12 @@ const RecentEmployees = props => {
               {props.employees.map((ele, id) => (
                 <tr className={classes.row}>
                   <td>{id}</td>
-                  <td>{ele.name}</td>
+                  <NavLink
+                    to={`/search-form/${id}`}
+                    style={{ textDecoration: "none", color: "black" }}
+                  >
+                    <td>{ele.name}</td>
+                  </NavLink>
                   <td>{ele.department}</td>
                   <td>{ele.mobile}</td>
                   {props.addArray &&

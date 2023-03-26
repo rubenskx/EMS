@@ -3,7 +3,7 @@ import classes from "./SearchForm.module.css";
 import { Form, useNavigate, useNavigation, useActionData} from "react-router-dom";
 import { Fragment, useState } from "react";
 
-const Upload = () => {
+const Upload = (props) => {
   const [toggler, setToggler] = useState();
   const navigate = useNavigate();
   const navigation = useNavigation();
@@ -18,7 +18,7 @@ const Upload = () => {
     {data && data.message && <p style={{ color: "red"}}>{data.message}</p>}
     <Form className={classes.form} method={"POST"}>
       <Card>
-        <h2>Upload</h2>
+        {props.type ? <h2>Edit</h2> : <h2>Upload</h2>}
         <p>
           <label htmlFor="title">Name</label>
           <input id="title" type="text" name="title" />

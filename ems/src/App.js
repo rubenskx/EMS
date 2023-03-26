@@ -12,7 +12,7 @@ import NotificationPage, {
 } from "./pages/NotificationPage";
 import SalaryIncrement from "./pages/SalaryIncrement";
 import IndividualUpload, {action as addEmployeeAction} from "./pages/IndividualUpload";
-
+import ShowPage from "./pages/ShowPage";
 const router = createBrowserRouter([
   {
     path: "login",
@@ -38,8 +38,27 @@ const router = createBrowserRouter([
       },
       {
         path: "search-form",
-        element: <SearchPage />,
-        action: searchFormAction,
+        children: [
+          {
+            index: true,
+            element: <SearchPage />,
+            action: searchFormAction,
+          },
+          {
+            path: ":id",
+            id: "employee-detail",
+            children: [
+              {
+                index: true,
+                element: <ShowPage />,
+              },
+              {
+                path: "edit",
+                element: <IndividualUpload/>
+              }
+            ],
+          },
+        ],
       },
       {
         path: "increment",
@@ -54,6 +73,15 @@ const router = createBrowserRouter([
         path: "upload",
         element: <IndividualUpload />,
         action: addEmployeeAction,
+      },
+      {
+        path: "employee",
+        children: [
+          {
+            index: true,
+            element: <ShowPage />,
+          },
+        ],
       },
     ],
   },
