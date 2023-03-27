@@ -15,6 +15,7 @@ import NotificationPage, {
 import SalaryIncrement from "./pages/SalaryIncrement";
 import IndividualUpload, {action as addEmployeeAction} from "./pages/IndividualUpload";
 import ShowPage from "./pages/ShowPage";
+import EditEmployee from "./pages/EditEmployee";
 const router = createBrowserRouter([
   {
     path: "login/",
@@ -63,7 +64,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "edit",
-                element: <IndividualUpload/>
+                element: <EditEmployee/>
               }
             ],
           },

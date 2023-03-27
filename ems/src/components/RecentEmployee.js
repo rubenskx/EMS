@@ -9,7 +9,7 @@ const RecentEmployees = props => {
         <Card>
           <div className={classes.table}>
             <table>
-              <tr className={classes.row + `` + classes.header}>
+              <tr className={classes.row + " " + classes.header}>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Department</th>
