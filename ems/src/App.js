@@ -3,6 +3,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./pages/Root";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import Forgotpassword from "./pages/forgotpassword";
+import Otp from "./pages/otp";
 import ExcelUpload from "./pages/ExcelUpload";
 import SearchPage from "./pages/SearchPage";
 import {action as searchFormAction} from "./components/SearchForm";
@@ -15,12 +17,19 @@ import IndividualUpload, {action as addEmployeeAction} from "./pages/IndividualU
 import ShowPage from "./pages/ShowPage";
 const router = createBrowserRouter([
   {
-    path: "login",
-    element: <RootLayout />,
+    path: "login/",
     children: [
       {
         index: true,
         element: <LoginPage />,
+      },
+      {
+        path:"forgotpassword",
+        element:<Forgotpassword/>,
+      },
+      {
+        path:"verifyotp",
+        element:<Otp/>,
       },
     ],
   },

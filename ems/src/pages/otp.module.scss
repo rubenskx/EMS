@@ -1,0 +1,118 @@
+
+
+
+.logh2{
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 52px;
+    background: -webkit-linear-gradient(#62d9f1, #1e3ecb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.maincard2{
+    margin:auto;
+    width:500px;
+    height:100%;
+    margin-top: 15%;
+    /* align-items:center; */
+    background-color: aliceblue;
+    border-radius: 20px;
+    position:relative;
+    transition: all 0.4s;
+	padding:10px;
+    
+}
+
+
+.maincard2:hover{
+    translate: -5px -5px;
+    box-shadow: 5px 5px 5px rgb(32, 125, 238);
+    transition: all 0.4s;
+}
+
+.otpinput{
+	margin-left: 37%;
+	padding-bottom: 20px;
+	position: relative;
+}
+
+.otpinput input{
+	height:40px;
+}
+
+.note1{
+  text-align: center;
+}
+
+.button2 {
+    margin-left:auto;
+    margin-right: auto;
+    margin-left: 30%;
+    border:none;
+    width:40%;
+    color:white;
+    background-image: url(../../public/loginbg.gif);
+    border-radius: 10px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    text-align: center;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  
+  .button2 span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+  }
+  
+  .button2 span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+  }
+  
+  .button2:hover span {
+    padding-right: 25px;
+    
+  }
+
+  .button2:hover span:after {
+    opacity: 1;
+    right: 0;
+  }
+
+
+
+  .btn2{
+    padding-top: 20px;
+    border:none;
+  }
+
+  @media (max-width: 800px) {
+    .maincard2 {
+      flex-direction: column;
+      border-radius: 10px;
+      width: 350px;
+    }
+    .maincard1 div{
+        width: 100%;
+        border-radius: 10px;
+    }
+    .form__group span{
+        position:absolute;
+        right:5px;
+    }
+    .otpinput{
+		margin-left: 31.5%;
+	}
+  
+
+  }
