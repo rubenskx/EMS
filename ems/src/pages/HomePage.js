@@ -10,19 +10,19 @@ const employees = [
     id: 1,
     name: "Ruben Sinu",
     department: "Tech",
-    mobile: "+91 891287893",
+    mobile_no: "+91 891287893",
   },
   {
     id: 2,
     name: "Abhay Unni",
     department: "Tech",
-    mobile: "+91 891287893",
+    mobile_no: "+91 891287893",
   },
   {
     id: 3,
     name: "Vishnu V Nair",
     department: "Tech",
-    mobile: "+91 891287893",
+    mobile_no: "+91 891287893",
   },
 ];
 

@@ -18,7 +18,7 @@ const DragAndDrop = (props) => {
 
   return (
     <>
-      <div className={"container " + classes.container}>
+      <div className={classes.container}>
         <Card>
           <div
             className={classes["drop-container"]}

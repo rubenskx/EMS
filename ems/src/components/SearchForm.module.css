@@ -6,6 +6,15 @@
     margin: 2rem auto;
 }
 
+
+.right{
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
 .form label,
 .form input,
 .form textarea {

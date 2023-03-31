@@ -78,7 +78,7 @@ const Notifications = ({ notifs }) => {
                 <ButtonUI onClick={() => setOverlay(id)}>
                   Inform Employees
                 </ButtonUI>
-                <ButtonUI onClick={() => excelGenerator(ele)}>
+                <ButtonUI onClick={() => excelGenerator(ele)} color="green">
                   Export as Excel
                 </ButtonUI>
               </div>

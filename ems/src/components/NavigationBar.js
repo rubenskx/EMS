@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom";
 import classes from "./NavigationBar.module.css";
+import {MdOutlineNotificationsActive } from "react-icons/md";
+
 const NavigationBar = () => {
   return (
     <nav
@@ -100,13 +102,23 @@ const NavigationBar = () => {
               </li>
               <li class="nav-item">
                 <NavLink
+                  to="/logout"
+                  className={({ isActive }) =>
+                    (isActive ? classes.active + " " : " ") + classes.links
+                  }
+                >
+                  Logout
+                </NavLink>
+              </li>
+              <li class="nav-item">
+                <NavLink
                   to="/notifications"
                   className={({ isActive }) =>
                     (isActive ? classes.active + " " : " ") + classes.links
                   }
                 >
                   <span>
-                    Notifications <div className={classes.notification}>4</div>
+                    <MdOutlineNotificationsActive size={30} />
                   </span>
                 </NavLink>
               </li>

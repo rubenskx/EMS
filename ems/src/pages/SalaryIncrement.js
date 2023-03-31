@@ -8,7 +8,7 @@ const SalaryIncrement =  (props) => {
 
     const [errors, setErrors] = useState("");
     const [data, setData] = useState([]);
-
+    const [downloadArray, setDownloadArray] = useState([]);
     const incrementHandler = async () => {
       setData([]);
       const date_before = document.getElementById("date_before").value;
@@ -40,7 +40,29 @@ const SalaryIncrement =  (props) => {
     };
 
     const excelGenerator = () => {
-        ExportExcel(data);
+        let filterData = [];
+        console.log("array",downloadArray);
+        console.log(data);
+        for (let ele of downloadArray){
+            filterData.push(data[ele - 1]);
+        
+        }
+
+        console.log("filtered", filterData);
+        ExportExcel(filterData);
+    }
+
+    const dataFilter = (id) => {
+      if(downloadArray.includes(id)){
+        let arr = downloadArray.filter((item) => item !== id);
+        setDownloadArray(arr);
+      }
+      else{
+        let arr = [...downloadArray];
+        arr.push(id);
+        setDownloadArray(arr);
+      }
+      // console.log(downloadArray);
     }
   return (
     <>
@@ -78,10 +100,10 @@ const SalaryIncrement =  (props) => {
           <div className="mt-5">
             <h3 className="text-center">Search Results</h3>
             <div style={{ textAlign: "right"}}>
-            <ButtonUI onClick={excelGenerator}>Export as Excel</ButtonUI>
+            <ButtonUI onClick={excelGenerator} color="green">Export as Excel</ButtonUI>
             <ButtonUI>Update</ButtonUI>
             </div>
-            <RecentEmployees employees={data} addArray={["salary", "increment"]}/>
+            <RecentEmployees employees={data} addArray={["salary", "increment"]} checked="yes" onClick={dataFilter}/>
           </div>
         )}
       </div>

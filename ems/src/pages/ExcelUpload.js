@@ -3,6 +3,8 @@ import { Fragment, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import RecentEmployees from "../components/RecentEmployee";
 import ButtonUI from "../UI/ButtonUI"
+import ExportExcel from "../utils/ExportExcel";
+import Card from "../UI/Card";
 const XLSX = require("xlsx");
 
 const ExcelUpload = (props) => {
@@ -36,7 +38,6 @@ const ExcelUpload = (props) => {
     console.log("hello");
     console.log(exceldata);
     const url = "http://localhost:7000/excel";
-    const dummy = {id:1};
     const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -51,20 +52,39 @@ const ExcelUpload = (props) => {
   }
   navigate("/");
   }
+
+  const templateLoader = () => {
+        let object = {};
+        object.name = "";
+        object.id = "";
+        object.department = "";
+        object.mobile_no = "";
+        let array = [];
+        array.push(object);
+        ExportExcel(array);
+  }
   return (
     <Fragment>
-      <DragAndDrop onFileDrop={submitHandler} />
-      {exceldata.length > 0 && (
-        <div className="container mt-5">
-          <h2>{`Found ${exceldata.length} Employees.`}</h2>
+      <div className="container mt-5">
+        <Card>
+          <h3>Download the template before uploading onto the website.</h3>
           <div style={{ textAlign: "right" }}>
-            <ButtonUI onClick={sendDataHandler}>
-              Submit
+            <ButtonUI color="green" onClick={() => templateLoader()}>
+              Download
             </ButtonUI>
           </div>
-          <RecentEmployees employees={exceldata} />
-        </div>
-      )}
+        </Card>
+        <DragAndDrop onFileDrop={submitHandler} />
+        {exceldata.length > 0 && (
+          <div className="mt-5">
+            <h2>{`Found ${exceldata.length} Employees.`}</h2>
+            <div style={{ textAlign: "right" }}>
+              <ButtonUI onClick={sendDataHandler}>Submit</ButtonUI>
+            </div>
+            <RecentEmployees employees={exceldata} />
+          </div>
+        )}
+      </div>
     </Fragment>
   );
 };

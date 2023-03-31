@@ -16,6 +16,7 @@ import SalaryIncrement from "./pages/SalaryIncrement";
 import IndividualUpload, {action as addEmployeeAction} from "./pages/IndividualUpload";
 import ShowPage from "./pages/ShowPage";
 import EditEmployee from "./pages/EditEmployee";
+import RemoveAuth from "./components/RemoveAuth";
 const router = createBrowserRouter([
   {
     path: "login/",
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
         element:<Otp/>,
       },
     ],
+  },
+  {
+    path: "logout",
+    element: <RemoveAuth/>,
   },
   {
     path: "/",
