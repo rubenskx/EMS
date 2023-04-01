@@ -2,16 +2,17 @@ import DragAndDrop from "../components/DragAndDrop";
 import { Fragment, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import RecentEmployees from "../components/RecentEmployee";
-import ButtonUI from "../UI/ButtonUI"
+import ButtonUI from "../UI/ButtonUI";
 import ExportExcel from "../utils/ExportExcel";
 import Card from "../UI/Card";
 const XLSX = require("xlsx");
 
 const ExcelUpload = (props) => {
   const [exceldata, setData] = useState([]);
+  const [error,setError] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
-    console.log(exceldata)
+    console.log(exceldata);
   }, [exceldata]);
 
   const parse = (excelData) => {
@@ -39,35 +40,59 @@ const ExcelUpload = (props) => {
     console.log(exceldata);
     const url = "http://localhost:7000/excel";
     const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(exceldata),
-  });
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(exceldata),
+    });
 
+    if (!response.ok) {
+      console.log("error");
+    }
 
-  if (!response.ok) {
-    console.log("error");
-  }
-  navigate("/");
-  }
+    if(response.status === 401){
+        const result = await response.json();
+        console.log(result);
+        setError(result.message);
+        return;
+    }
+    navigate("/");
+  };
 
   const templateLoader = () => {
-        let object = {};
-        object.name = "";
-        object.id = "";
-        object.department = "";
-        object.mobile_no = "";
-        let array = [];
-        array.push(object);
-        ExportExcel(array);
-  }
+    let object = {};
+    object.name = "";
+    object.id = "";
+    object.department = "";
+    object.mobile_no = "";
+    object.current_salary = "";
+    object.gender = "";
+    object.date_of_joining = "";
+    object.qualification = "";
+    object.previous_experience = "";
+    object.year_of_course_completion = "";
+    object.previous_designation="";
+    object.current_designation="";
+    object.retired="";
+    object.wef="";
+    object.deduction="";
+    object.remarks="";
+    object.head_engineer="";
+    object.director="";
+    object.email="";
+    object.department="";
+    object.project="";
+    let array = [];
+    array.push(object);
+    ExportExcel(array);
+  };
   return (
     <Fragment>
       <div className="container mt-5">
         <Card>
           <h3>Download the template before uploading onto the website.</h3>
+          {error!=="" && <p style={{ color: "red"}}>{error}</p>}
           <div style={{ textAlign: "right" }}>
             <ButtonUI color="green" onClick={() => templateLoader()}>
               Download
@@ -89,4 +114,3 @@ const ExcelUpload = (props) => {
   );
 };
 export default ExcelUpload;
-
