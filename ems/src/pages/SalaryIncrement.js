@@ -68,7 +68,7 @@ const SalaryIncrement =  (props) => {
     <>
       <div className="container mt-5">
         <Card>
-          <div className="text-center">
+          <div>
             <h3>Enter a range for Salary Incrementation</h3>
             {errors !== "" && <p style={{ color: "red" }}>{errors}</p>}
             <div className="row mt-5">
@@ -90,7 +90,7 @@ const SalaryIncrement =  (props) => {
                 </label>
                 <input id="date_after" type="date" name="date_after" />
               </p>
-              <p className="col-lg-2 text-center">
+              <p className="col-lg-2">
                 <ButtonUI onClick={incrementHandler}> Search</ButtonUI>
               </p>
             </div>
