@@ -3,6 +3,9 @@ const app = express();
 const path = require("path");
 const mysql = require("mysql");
 const cors = require("cors");
+const mysql = require("mysql");
+const flash = require("connect-flash");
+const nodemailer = require('nodemailer');
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -80,6 +83,11 @@ app.post("/upload", async (req, res) => {
   console.log("Form Data",data);
   res.status(200).json({ message: "Success" });
 }); 
+
+app.post("/search", async(req,res)=>{
+
+});
+
 app.listen(7000, () => {
   console.log("LISTENING ON PORT 7000!");
 });
