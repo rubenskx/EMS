@@ -3,6 +3,8 @@ const app = express();
 const path = require("path");
 const mysql = require("mysql");
 const cors = require("cors");
+const cron = require("node-cron");
+const { query } = require("express");
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -139,9 +141,95 @@ function queryDatabase(query) {
 }
 
 app.post("/search-form", async (req, res) => {
+  let qtitle="";
+  let qgender="";
+  let qdate="";
+  let qcurrentdesignation="";
+  let qpreviousdesignation="";
+  let qretired="";
+  let qqualification="";
+  let qdepartment="";
+  let qdirector="";
+  let qhead="";
+  let qprojectname="";
+  let qremarks="";
+  let qwef_date="";
+  let qsalary_greater="";
+  let qsalary_lesser="";
+  let qexperience="";
+
+  rdata=req.body;
+  console.log(rdata);
+
+  if(rdata.title!=""){
+    qtitle=` employee_data.name LIKE '%${rdata.title}%'`;
+  }
+  else{
+    qtitle=" employee_data.name LIKE '%'";
+  }
+  if(rdata.data!=""){
+    if(rdata.otd){
+      qdate=` AND date_of_joining = '${rdata.date}'`;
+    }
+    else if(rdata.btd){
+      qdate=` AND date_of_joining <= '${rdata.date}'`;
+    }
+    else{
+      qdate=` AND date_of_joining >= '${rdata.date}'`;
+    }
+  }
+  if(rdata.director!=""){
+    qdirector=` AND director LIKE '%${rdata.director}%'`;
+  }
+  if(rdata.head!=""){
+    qhead=` AND head_engineer LIKE '%${rdata.head}%'`;
+  }
+  if(rdata.qualification!=""){
+    qqualification=` AND qualification LIKE '%${rdata.qualification}%'`;
+  }
+  if(rdata.remarks!=""){
+    qremarks=` AND remarks LIKE '%${rdata.remarks}%'`;
+  }
+  if(rdata.wef_date!=""){
+    qwef_date=` AND wef = '${rdata.wef_date}'`;
+  }
+  if(rdata.salary_greater!==""){
+    qsalary_greater= ` AND current_salary >= ${rdata.salary_greater}`;
+  }
+  if(rdata.salary_less!==""){
+    qsalary_lesser=` AND current_salary <= ${rdata.salary_lesser}`;
+  }
+
+  if(rdata.months){
+    qexperience=` AND previous_experience LIKE '${rdata.months}%M%' OR previous_experience LIKE '${rdata.months}%m%'` ;
+  }
+  if(rdata.years){
+    qexperience=` AND previous_experience LIKE '${rdata.years}%Y%' OR previous_experience LIKE '${rdata.years}%y%'`;
+  }
+  if(rdata.gender!="Choose..."){
+    qgender=` AND gender LIKE '${rdata.gender}%'`;
+  }
+  if(rdata.department!="Choose..."){
+    qdepartment=` AND employee_data.department_id=${rdata.department} AND employee_data.department_id=department.department_id`;
+  }
+  if(rdata.previous_designation!="Choose..."){
+    qpreviousdesignation=` AND previous_designation_id=${rdata.previous_designation} AND employee_data.previous_designation_id=designation.designation_id`;
+  }
+  if(rdata.current_designation!="Choose..."){
+    qcurrentdesignation=` AND current_designation_id=${rdata.current_designation} AND employee_data.current_designation_id=designation.designation_id`;
+  }
+
+  if(rdata.projectid!="Choose..."){
+    qprojectname=` AND employee_data.project_id=${rdata.projectid} AND employee_data.project_id=project.project_id`;
+  }
+  let query=`SELECT * FROM employee_data,department,designation,project 
+  WHERE ${qtitle} ${qgender} ${qdate} ${qcurrentdesignation} ${qpreviousdesignation} 
+  ${qretired} ${qqualification} ${qdepartment} ${qdirector} ${qhead} ${qprojectname} ${qremarks} 
+  ${qwef_date} ${qsalary_greater} ${qsalary_lesser} ${qexperience};`;
+  data = await queryDatabase(query);
+
   try {
-    const data = req.body;
-    res.status(200).json({ message: "Success", employees });
+    res.status(200).json({ message: "Success", data });
   } catch (error) {
     res.status(404).json({ message: error });
   }
