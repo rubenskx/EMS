@@ -217,29 +217,29 @@ app.get("/upload", async (req, res) => {
   res.status(200).json({ message: "Success", results });
 });
 app.post("/upload", async (req, res) => {
-  try{
-  const data = req.body;
-  console.log("Form Data", data);
-  const deduction = data.deduction ? data.deduction : 0;
-  const retired = data.retired === 'on' ? "Yes" : "No";
-  const remarks = data.remarks === "" ? " " : data.remarks;
-  const head_engineer = data.head_engineer === "" ? "": data.head_engineer;
-  const director = data.director === ""? "": data.director;
-  let experience = "";
-  if(data.months){
-    experience+= `${data.months} months`
-  }
-  if(data.years){
-    experience+= `${data.years} years`
-  }
+  try {
+    const data = req.body;
+    console.log("Form Data", data);
+    const deduction = data.deduction ? data.deduction : 0;
+    const retired = data.retired === "on" ? "Yes" : "No";
+    const remarks = data.remarks === "" ? " " : data.remarks;
+    const head_engineer = data.head_engineer === "" ? "" : data.head_engineer;
+    const director = data.director === "" ? "" : data.director;
+    let experience = "";
+    if (data.months) {
+      experience += `${data.months} months`;
+    }
+    if (data.years) {
+      experience += `${data.years} years`;
+    }
 
-  const query = `INSERT INTO employee_data (id,name,gender,department_id,email,mobile_no,date_of_joining,current_designation_id,previous_designation_id,previous_experience,qualification,year_of_course_completion,retired,wef,current_salary,remarks,head_engineer,director,project_id,deduction) VALUES("${data.id}","${data.title}", "${data.gender}", ${data.department}, "${data.email}", "${data.mobile_no}", "${data.date}",  ${data.currentDesignation}, ${data.previousDesignation}, "${experience}", "${data.qualify}", ${data.year_of_course}, "${retired}", "${data.wef_date}", ${data.salary}, "${remarks}", "${data.head_engineer}", "${data.director}", ${data.project}, ${data.deduction}); INSERT INTO salary (salary,status,wef_date,employee_id) VALUES(${data.salary}, "current", "${data.wef_date}", "${data.id}")`;
-  const response = await queryDatabase(query);
-  res.status(200).json({ message: "Success" });
-}catch(err){
-  console.log(err);
-  res.status(422).json({ error: err});
-}
+    const query = `INSERT INTO employee_data (id,name,gender,department_id,email,mobile_no,date_of_joining,current_designation_id,previous_designation_id,previous_experience,qualification,year_of_course_completion,retired,wef,current_salary,remarks,head_engineer,director,project_id,deduction) VALUES("${data.id}","${data.title}", "${data.gender}", ${data.department}, "${data.email}", "${data.mobile_no}", "${data.date}",  ${data.currentDesignation}, ${data.previousDesignation}, "${experience}", "${data.qualify}", ${data.year_of_course}, "${retired}", "${data.wef_date}", ${data.salary}, "${remarks}", "${data.head_engineer}", "${data.director}", ${data.project}, ${data.deduction}); INSERT INTO salary (salary,status,wef_date,employee_id) VALUES(${data.salary}, "current", "${data.wef_date}", "${data.id}")`;
+    const response = await queryDatabase(query);
+    res.status(200).json({ message: "Success" });
+  } catch (err) {
+    console.log(err);
+    res.status(422).json({ error: err });
+  }
 });
 
 app.post("/add/dept", async (req, res) => {
@@ -269,6 +269,18 @@ app.post("/add/project", async (req, res) => {
   res.status(200).json({ message: "Success" });
 });
 
+app.get("/show/:id", async (req, res) => {
+  const { id } = req.params;
+  const [employeeData] =
+    await queryDatabase(`SELECT *,employee_data.name AS emp_name,department.name AS dept_name,previous_designation.designation_name AS previous_designation_name, current_designation.designation_name AS current_designation_name
+  FROM employee_data
+  INNER JOIN department ON employee_data.department_id = department.department_id
+  INNER JOIN designation AS previous_designation ON employee_data.previous_designation_id = previous_designation.designation_id
+  INNER JOIN designation AS current_designation ON employee_data.current_designation_id = current_designation.designation_id
+  INNER JOIN project ON employee_data.project_id = project.project_id
+  WHERE id=${id}`);
+  res.json({ employeeData });
+});
 app.listen(7000, () => {
   console.log("LISTENING ON PORT 7000!");
 });

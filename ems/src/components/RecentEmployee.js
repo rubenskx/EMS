@@ -21,7 +21,7 @@ const RecentEmployees = (props) => {
               <tr className={classes.row}>
                 <td>{ele.id}</td>
                 <NavLink
-                  to={`/search-form/${id}`}
+                  to={`/search-form/${ele.id}`}
                   style={{ textDecoration: "none", color: "black" }}
                 >
                   <td>{ele.name}</td>
