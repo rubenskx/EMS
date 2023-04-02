@@ -206,7 +206,79 @@ app.get("/notifications", async (req, res) => {
 });
 
 app.get("/increment", async (req, res) => {
-  res.status(200).json({ message: "Success", employees });
+  const {before,after}=req.query;
+  const {id}=req.params;
+  const empData=await queryDatabase(`SELECT *,employee_data.name AS emp_name,department.name AS dept_name,previous_designation.designation_name AS previous_designation_name, current_designation.designation_name AS current_designation_name
+  FROM employee_data
+  INNER JOIN department ON employee_data.department_id = department.department_id
+  INNER JOIN designation AS previous_designation ON employee_data.previous_designation_id = previous_designation.designation_id
+  INNER JOIN designation AS current_designation ON employee_data.current_designation_id = current_designation.designation_id
+  INNER JOIN project ON employee_data.project_id = project.project_id
+  WHERE  wef BETWEEN '${before}' AND '${after}';`);
+  console.log(empData);
+  empData.forEach((element) => {
+    const basic=Math.round(element.current_salary/1.86);
+    if(7650<basic<8900){
+      element.increment=Math.round((basic+250)*1.86);
+    }
+    if(8900<basic<10350){
+      element.increment=Math.round((basic+290)*1.86);
+    }
+    if(10350<basic<12000){
+      element.increment=Math.round((basic+330)*1.86);
+    }
+    if(12000<basic<13850){
+      element.increment=Math.round((basic+370)*1.86);
+    }
+    if(13850<basic<15950){
+      element.increment=Math.round((basic+420)*1.86);
+    }
+    if(15950<basic<18300){
+      element.increment=Math.round((basic+470)*1.86);
+    }
+    if(18300<basic<20950){
+      element.increment=Math.round((basic+530)*1.86);
+    }
+    if(20950<basic<23900){
+      element.increment=Math.round((basic+590)*1.86);
+    }
+    if(23900<basic<27250){
+      element.increment=Math.round((basic+670)*1.86);
+    }
+    if(27250<basic<31000){
+      element.increment=Math.round((basic+750)*1.86);
+    }
+    if(31000<basic<35150){
+      element.increment=Math.round((basic+830)*1.86);
+    }
+    if(35150<basic<39700){
+      element.increment=Math.round((basic+910)*1.86);
+    }
+    if(39700<basic<44650){
+      element.increment=Math.round((basic+990)*1.86);
+    }
+    if(44650<basic<50100){
+      element.increment=Math.round((basic+1090)*1.86);
+    }
+    if(50100<basic<56050){
+      element.increment=Math.round((basic+1190)*1.86);
+    }
+    if(56050<basic<65080){
+      element.increment=Math.round((basic+1290)*1.86);
+    }
+    if(65080<basic<74810){
+      element.increment=Math.round((basic+1390)*1.86);
+    }
+    if(74810<basic<85380){
+       element.increment=Math.round((basic+1510)*1.86);
+    }
+    if(85380<basic<91900){
+      element.increment=Math.round((basic+1630)*1.86);
+    }
+  });
+  const data={empData:empData};
+  console.log(data);
+  res.json(data);
 });
 
 app.put("/notifications/:id", async (req, res) => {
