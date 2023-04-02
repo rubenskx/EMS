@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const mysql = require("mysql");
+const bcrypt = require("bcrypt");
 const cors = require("cors");
 const cron = require("node-cron");
 app.use(cors());
@@ -23,6 +24,24 @@ connection.connect((err) => {
     return;
   }
   console.log("Connected to database");
+});
+
+app.get("/login", async (req, res) => {
+  const data = req.body;
+  const username = data.username;
+  const password = bcrypt.hashSync(data.password, 10);
+  const query = `SELECT * FROM admin_details`;
+  connection.query(query, (err, rows) => {
+    if (err) throw(err);
+    else
+    {
+      if(rows[0][0] === username && rows[0][1] === password){
+        return res.status(201).json({ username: `${username}`, password: `${password}`});
+      } else {
+        return res.status(401).json({ message: `The username or password is incorrect.`});
+      }
+    }
+  })
 });
 
 function runQuery() {
