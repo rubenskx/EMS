@@ -16,6 +16,8 @@ table {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 20px;
+    overflow-x: scroll;
+    overflow-y: scroll;
 }
 
 .table{
