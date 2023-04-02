@@ -13,7 +13,7 @@ import NotificationPage, {
   loader as notificationsLoader,
 } from "./pages/NotificationPage";
 import SalaryIncrement from "./pages/SalaryIncrement";
-import IndividualUpload, {action as addEmployeeAction} from "./pages/IndividualUpload";
+import IndividualUpload, {action as addEmployeeAction, loader as formDetailsLoader} from "./pages/IndividualUpload";
 import ShowPage from "./pages/ShowPage";
 import EditEmployee from "./pages/EditEmployee";
 import RemoveAuth from "./components/RemoveAuth";
@@ -47,7 +47,6 @@ const router = createBrowserRouter([
         index: true,
         element: <HomeUI />,
         loader: homePageLoader,
-
       },
       {
         path: "excel",
@@ -90,6 +89,7 @@ const router = createBrowserRouter([
         path: "upload",
         element: <IndividualUpload />,
         action: addEmployeeAction,
+        loader: formDetailsLoader,
       },
       {
         path: "employee",
