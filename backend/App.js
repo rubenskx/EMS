@@ -233,16 +233,16 @@ app.post("/search-form", async (req, res) => {
     qdepartment=` AND employee_data.department_id=${rdata.department} AND employee_data.department_id=department.department_id`;
   }
   if(rdata.previous_designation!="Choose..."){
-    qpreviousdesignation=` AND previous_designation_id=${rdata.previous_designation} AND employee_data.previous_designation_id=designation.designation_id`;
+    qpreviousdesignation=` AND previous_designation_id=${rdata.previous_designation} AND employee_data.previous_designation_id=t.designation_id`;
   }
   if(rdata.current_designation!="Choose..."){
-    qcurrentdesignation=` AND current_designation_id=${rdata.current_designation} AND employee_data.current_designation_id=designation.designation_id`;
+    qcurrentdesignation=` AND current_designation_id=${rdata.current_designation} AND employee_data.current_designation_id=s.designation_id`;
   }
 
   if(rdata.projectid!="Choose..."){
     qprojectname=` AND employee_data.project_id=${rdata.projectid} AND employee_data.project_id=project.project_id`;
   }
-  let query=`SELECT * FROM employee_data,department,designation,project 
+  let query=`SELECT *, employee_data.name as emp_name,t.designation_name as previous_designation, s.designation_name as current_designation FROM employee_data,department,designation as t,designation as s, project 
   WHERE ${qtitle} ${qgender} ${qdate} ${qcurrentdesignation} ${qpreviousdesignation} 
   ${qretired} ${qqualification} ${qdepartment} ${qdirector} ${qhead} ${qprojectname} ${qremarks} 
   ${qwef_date} ${qsalary_greater} ${qsalary_lesser} ${qexperience};`;

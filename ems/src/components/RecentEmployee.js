@@ -48,7 +48,7 @@ const RecentEmployees = (props) => {
                 <td>{ele.qualification}</td>
                 <td>{ele.previous_experience}</td>
                 <td>{ele.year_of_course_completion}</td>
-                <td>{ele.previous_designation_name}</td>
+                <td>{ele.previous_designation_name ? ele.previous_designation_name :ele.previous_designation }</td>
                 <td>{ele.retired}</td>
                 <td>{ele.current_salary}</td>
                 <td>{ele.wef.substring(0,10)}</td>
@@ -57,9 +57,9 @@ const RecentEmployees = (props) => {
                 <td>{ele.head_engineer}</td>
                 <td>{ele.director}</td>
                 <td>{ele.email}</td>
-                <td>{ele.dept_name}</td>
+                <td>{ele.dept_name ? ele.dept_name : ele.name}</td>
                 <td>{ele.project_name}</td>
-                <td>{ele.current_designation_name}</td>
+                <td>{ele.current_designation_name ? ele.previous_designation_name :ele.current_designation }</td>
                 {props.addArray &&
                   props.addArray.map((keys) => <td>{ele[keys]}</td>)}
                 {props.checked && (
