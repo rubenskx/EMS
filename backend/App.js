@@ -218,15 +218,17 @@ app.post("/upload", async (req, res) => {
 
 app.get('/show/:id',async (req, res) => {
   const {id}=req.params;
-  const [employeeData]=await queryDatabase(`SELECT *,employee_data.name AS emp_name,department.name AS dept_name,previous_designation.designation_name AS previous_designation_name, current_designation.designation_name AS current_designation_name
+  const [empData,salary_details]=await queryDatabase(`SELECT *,employee_data.name AS emp_name,department.name AS dept_name,previous_designation.designation_name AS previous_designation_name, current_designation.designation_name AS current_designation_name
   FROM employee_data
   INNER JOIN department ON employee_data.department_id = department.department_id
   INNER JOIN designation AS previous_designation ON employee_data.previous_designation_id = previous_designation.designation_id
   INNER JOIN designation AS current_designation ON employee_data.current_designation_id = current_designation.designation_id
   INNER JOIN project ON employee_data.project_id = project.project_id
-  WHERE id=${id}`);
+  WHERE id=${id};SELECT * FROM salary WHERE employee_id=${id};`);
+  const employeeData={};
+  employeeData.employeeData=empData;
+  employeeData.salary_details=salary_details;
   res.json({employeeData})
-  
 });
 app.listen(7000, () => {
   console.log("LISTENING ON PORT 7000!");
