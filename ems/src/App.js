@@ -15,7 +15,7 @@ import NotificationPage, {
 import SalaryIncrement from "./pages/SalaryIncrement";
 import IndividualUpload, {action as addEmployeeAction, loader as formDetailsLoader} from "./pages/IndividualUpload";
 import ShowPage from "./pages/ShowPage";
-import EditEmployee from "./pages/EditEmployee";
+import EditEmployee, {loader as editLoaderData, action as editShowData } from "./pages/EditEmployee";
 import RemoveAuth from "./components/RemoveAuth";
 import ShowPageUI, {loader as showpageloader} from "./pages/ShowPageUI";
 const router = createBrowserRouter([
@@ -68,11 +68,13 @@ const router = createBrowserRouter([
               {
                 index: true,
                 element: <ShowPageUI />,
-                loader:showpageloader,
+                loader: showpageloader,
               },
               {
                 path: "edit",
                 element: <EditEmployee />,
+                loader: editLoaderData,
+                action: editShowData,
               },
             ],
           },

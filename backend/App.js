@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const mysql = require("mysql");
+const bcrypt = require("bcrypt");
 const cors = require("cors");
 const cron = require("node-cron");
 app.use(cors());
@@ -22,6 +23,24 @@ connection.connect((err) => {
     return;
   }
   console.log("Connected to database");
+});
+
+app.get("/login", async (req, res) => {
+  const data = req.body;
+  const username = data.username;
+  const password = bcrypt.hashSync(data.password, 10);
+  const query = `SELECT * FROM admin_details`;
+  connection.query(query, (err, rows) => {
+    if (err) throw(err);
+    else
+    {
+      if(rows[0][0] === username && rows[0][1] === password){
+        return res.status(201).json({ username: `${username}`, password: `${password}`});
+      } else {
+        return res.status(401).json({ message: `The username or password is incorrect.`});
+      }
+    }
+  })
 });
 
 function runQuery() {
@@ -269,18 +288,55 @@ app.post("/add/project", async (req, res) => {
   res.status(200).json({ message: "Success" });
 });
 
-app.get("/show/:id", async (req, res) => {
-  const { id } = req.params;
-  const [employeeData] =
-    await queryDatabase(`SELECT *,employee_data.name AS emp_name,department.name AS dept_name,previous_designation.designation_name AS previous_designation_name, current_designation.designation_name AS current_designation_name
+app.get('/show/:id',async (req, res) => {
+  const {id}=req.params;
+  const [empData,salary_details]=await queryDatabase(`SELECT *,employee_data.name AS emp_name,department.name AS dept_name,previous_designation.designation_name AS previous_designation_name, current_designation.designation_name AS current_designation_name
   FROM employee_data
   INNER JOIN department ON employee_data.department_id = department.department_id
   INNER JOIN designation AS previous_designation ON employee_data.previous_designation_id = previous_designation.designation_id
   INNER JOIN designation AS current_designation ON employee_data.current_designation_id = current_designation.designation_id
   INNER JOIN project ON employee_data.project_id = project.project_id
-  WHERE id=${id}`);
-  res.json({ employeeData });
+  WHERE id=${id};SELECT * FROM salary WHERE employee_id=${id};`);
+  const [totalDepartments, totalProjects, totalDesignation] =
+    await queryDatabase(
+      "SELECT * FROM department; SELECT * FROM project; SELECT * FROM designation;"
+    );
+  console.log(totalDepartments, totalProjects, totalDesignation);
+  const employeeData={};
+  employeeData.employeeData=empData;
+  employeeData.salary_details=salary_details;
+  employeeData.total_dept = totalDepartments;
+  employeeData.total_projects = totalProjects;
+  employeeData.total_designation  = totalDesignation;
+  res.json({employeeData})
 });
+
+app.patch("/show/:id", async(req,res) => {
+try {
+  const data = req.body;
+  console.log("Form Data", data);
+  const deduction = data.deduction ? data.deduction : 0;
+  const retired = data.retired === "on" ? "Yes" : "No";
+  const remarks = data.remarks === "" ? " " : data.remarks;
+  const head_engineer = data.head_engineer === "" ? "" : data.head_engineer;
+  const director = data.director === "" ? "" : data.director;
+  let experience = "";
+  if (data.months) {
+    experience += `${data.months} months`;
+  }
+  if (data.years) {
+    experience += `${data.years} years`;
+  }
+
+  const query = `UPDATE employee_data SET name = "${data.title}" ,gender ="${data.gender}" ,department_id = ${data.department}, email = "${data.email}" , mobile_no = "${data.mobile_no}", date_of_joining = "${data.date}" , current_designation_id = ${data.currentDesignation} , previous_designation_id = ${data.previousDesignation}, previous_experience = "${experience}" ,qualification = "${data.qualify}" ,year_of_course_completion = ${data.year_of_course}, retired = "${retired}" , wef = "${data.wef_date}" , current_salary = ${data.salary}, remarks = "${remarks}" , head_engineer = "${data.head_engineer}" , director = "${data.director}" ,project_id = ${data.project}, deduction = ${data.deduction} WHERE id="${data.id}"; UPDATE salary set salary=${data.salary}, wef_date="${data.wef_date}" WHERE employee_id="${data.id}";`;
+  console.log(query);
+  const response = await queryDatabase(query);
+  res.status(200).json({ message: "Success" });
+} catch (err) {
+  console.log(err);
+  res.status(422).json({ error: err });
+}
+})
 app.listen(7000, () => {
   console.log("LISTENING ON PORT 7000!");
 });

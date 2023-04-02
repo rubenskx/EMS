@@ -7,8 +7,9 @@ import ButtonUI from "../UI/ButtonUI";
 import { useState } from "react";
 const ShowEmployee = (props) => {
   const navigate = useNavigate();
-  const emp = props.results;
-  console.log("employee", emp);
+  const emp=props.results.employeeData[0];
+  const salaryDetails=props.results.salary_details
+  console.log(emp,salaryDetails);
   const [toggler, setToggler] = useState(false);
   const editPageGenerator = (id) => {
     navigate(`/search-form/${id}/edit`);
@@ -23,7 +24,7 @@ const ShowEmployee = (props) => {
               <p>{emp.current_designation_name}</p>
             </div>
             <div style={{ textAlign: "right" }} className="col-lg-1">
-              <AiOutlineEdit size={30} onClick={() => editPageGenerator(0)} />
+              <AiOutlineEdit size={30} onClick={() => editPageGenerator(emp.id)} />
             </div>
           </div>
           <div className="row container">
@@ -160,7 +161,7 @@ const ShowEmployee = (props) => {
               <h2>Salary History</h2>
               <p>Brief analysis of employee salary.</p>
             </div>
-            <LineChart />
+            <LineChart salaryDetails={salaryDetails}/>
           </Card>
         </div>
       )}
