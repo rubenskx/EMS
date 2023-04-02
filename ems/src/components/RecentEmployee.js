@@ -7,7 +7,7 @@ const RecentEmployees = (props) => {
   return (
     <Fragment>
       <Card>
-        <div className={classes.table}>
+        <div className={classes.table} >
           <table>
             <tr className={classes.row + " " + classes.header}>
               <th>ID</th>
