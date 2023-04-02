@@ -26,16 +26,20 @@ const SalaryIncrement =  (props) => {
         setErrors("Incorrect range provided.");
         return;
       }
-
-      const response = await fetch("http://localhost:7000/increment");
+      console.log(date_after,date_before,before,after);
+      const response = await fetch("http://localhost:7000/increment?"+new URLSearchParams({
+        before: date_before,
+        after: date_after,
+    }));
       if(!response.ok){
         setErrors("There is something wrong with database right now. Please try again.");
         return;
       }
 
       const employeeData = await response.json();
+      console.log(employeeData);
       setErrors("");
-      setData(employeeData.employees);
+      setData(employeeData.empData);
     
     };
 
@@ -103,7 +107,7 @@ const SalaryIncrement =  (props) => {
             <ButtonUI onClick={excelGenerator} color="green">Export as Excel</ButtonUI>
             <ButtonUI>Update</ButtonUI>
             </div>
-            <RecentEmployees employees={data} addArray={["salary", "increment"]} checked="yes" onClick={dataFilter}/>
+            <RecentEmployees employees={data} addArray={["increment"]} checked="yes" onClick={dataFilter}/>
           </div>
         )}
       </div>

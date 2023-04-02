@@ -4,14 +4,14 @@ import Card from "../UI/Card";
 import ExportExcel from "../utils/ExportExcel";
 import Modal from "../UI/Modal";
 import classes from "./Notifications.module.css";
-import { redirect, json } from "react-router-dom";
+import { json, useNavigate } from "react-router-dom";
 import { HiTrash } from "react-icons/hi";
 
 const Notifications = ({ notifs }) => {
   const [overlay, setOverlay] = useState(-1);
   const [errors, setErrors] = useState("");
 
-
+  const navigate = useNavigate();
   const excelGenerator = (array) => {
     ExportExcel(array);
   };
@@ -62,23 +62,24 @@ const Notifications = ({ notifs }) => {
             }
           );
         }
-        return redirect("/notifications");
+        return navigate("/notifications", { replace: true});
     }
   }
   return (
     <>
       <div className="container">
         {errors !== "" && <p style={{ color: "red" }}>{errors}</p>}
+        {notifs.length === 0 && <p className="text-center mt-5">There are no notifications to show currently.</p>}
         {notifs.map((ele, id) => (
           <>
             <Card>
-              Found {ele.length} employees with contract extension.
+                {ele.title}
               <div style={{ textAlign: "right" }}>
-                <HiTrash size={50} onClick={() => startDeleteHandler(id)}/>
+                <HiTrash size={40} onClick={() => startDeleteHandler(ele.notification_id)}/>
                 <ButtonUI onClick={() => setOverlay(id)}>
                   Inform Employees
                 </ButtonUI>
-                <ButtonUI onClick={() => excelGenerator(ele)} color="green">
+                <ButtonUI onClick={() => excelGenerator(ele.data)} color="green">
                   Export as Excel
                 </ButtonUI>
               </div>

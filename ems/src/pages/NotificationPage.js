@@ -39,6 +39,7 @@ async function loadNotifs() {
     );
   } else {
     const resData = await response.json();
+    console.log("array",resData.array);
     return resData.array;
   }
 }

@@ -1,7 +1,7 @@
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./pages/Root";
-import HomePage from "./pages/HomePage";
+import HomeUI, { loader as homePageLoader} from "./pages/HomeUI";
 import LoginPage from "./pages/LoginPage";
 import Forgotpassword from "./pages/forgotpassword";
 import Otp from "./pages/otp";
@@ -13,10 +13,11 @@ import NotificationPage, {
   loader as notificationsLoader,
 } from "./pages/NotificationPage";
 import SalaryIncrement from "./pages/SalaryIncrement";
-import IndividualUpload, {action as addEmployeeAction} from "./pages/IndividualUpload";
+import IndividualUpload, {action as addEmployeeAction, loader as formDetailsLoader} from "./pages/IndividualUpload";
 import ShowPage from "./pages/ShowPage";
-import EditEmployee from "./pages/EditEmployee";
+import EditEmployee, {loader as editLoaderData, action as editShowData } from "./pages/EditEmployee";
 import RemoveAuth from "./components/RemoveAuth";
+import ShowPageUI, {loader as showpageloader} from "./pages/ShowPageUI";
 const router = createBrowserRouter([
   {
     path: "login/",
@@ -26,18 +27,18 @@ const router = createBrowserRouter([
         element: <LoginPage />,
       },
       {
-        path:"forgotpassword",
-        element:<Forgotpassword/>,
+        path: "forgotpassword",
+        element: <Forgotpassword />,
       },
       {
-        path:"verifyotp",
-        element:<Otp/>,
+        path: "verifyotp",
+        element: <Otp />,
       },
     ],
   },
   {
     path: "logout",
-    element: <RemoveAuth/>,
+    element: <RemoveAuth />,
   },
   {
     path: "/",
@@ -45,7 +46,8 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <HomeUI />,
+        loader: homePageLoader,
       },
       {
         path: "excel",
@@ -65,12 +67,15 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <ShowPage />,
+                element: <ShowPageUI />,
+                loader: showpageloader,
               },
               {
                 path: "edit",
-                element: <EditEmployee/>
-              }
+                element: <EditEmployee />,
+                loader: editLoaderData,
+                action: editShowData,
+              },
             ],
           },
         ],
@@ -88,6 +93,7 @@ const router = createBrowserRouter([
         path: "upload",
         element: <IndividualUpload />,
         action: addEmployeeAction,
+        loader: formDetailsLoader,
       },
       {
         path: "employee",
