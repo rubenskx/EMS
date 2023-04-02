@@ -5,8 +5,9 @@ import { useNavigate } from "react-router-dom";
 import LineChart from "./Chart";
 import ButtonUI from "../UI/ButtonUI";
 import { useState } from "react";
-const ShowEmployee = () => {
+const ShowEmployee = (props) => {
   const navigate = useNavigate();
+  const emp=props.results;
   const [toggler, setToggler] = useState(false);
   const editPageGenerator = (id) => {
     navigate(`/search-form/${id}/edit`);
@@ -17,8 +18,8 @@ const ShowEmployee = () => {
         <Card>
           <div className="row">
             <div style={{ textAlign: "left" }} className="col-lg-11">
-              <h2>Ruben Sinu Kurian</h2>
-              <p>Web Developer</p>
+              <h2>{emp.emp_name}</h2>
+              <p>{emp.current_designation_name}</p>
             </div>
             <div style={{ textAlign: "right" }} className="col-lg-1">
               <AiOutlineEdit size={30} onClick={() => editPageGenerator(0)} />
@@ -30,31 +31,31 @@ const ShowEmployee = () => {
                 <label htmlFor="name" className={classes.bold + " mt-3"}>
                   Name
                 </label>
-                <div>Ruben Sinu Kurian</div>
+                <div>{emp.emp_name}</div>
               </div>
               <div>
                 <label htmlFor="name" className={classes.bold + " mt-3"}>
                   Email
                 </label>
-                <div>rubensinuk@gmail.com</div>
+                <div>{emp.email}</div>
               </div>
               <div>
                 <label htmlFor="number" className={classes.bold + " mt-3"}>
                   Mobile Number
                 </label>
-                <div>+91 8943141386</div>
+                <div>{emp.mobile_no}</div>
               </div>
               <div>
                 <label htmlFor="number" className={classes.bold + " mt-3"}>
                   Department
                 </label>
-                <div>Technology</div>
+                <div>{emp.dept_name}</div>
               </div>
               <div>
                 <label htmlFor="number" className={classes.bold + " mt-3"}>
                   Retired
                 </label>
-                <div>No</div>
+                <div>{emp.retired}</div>
               </div>
               <div>
                 <label
@@ -63,7 +64,7 @@ const ShowEmployee = () => {
                 >
                   Head Enginner
                 </label>
-                <div>Mr. Xyz</div>
+                <div>{emp.head_engineer}</div>
               </div>
             </div>
             <div className="col-lg-4">
@@ -71,75 +72,69 @@ const ShowEmployee = () => {
                 <label htmlFor="gender" className={classes.bold + " mt-3"}>
                   Gender
                 </label>
-                <div>Male</div>
+                <div>{emp.gender}</div>
               </div>
               <div>
                 <label htmlFor="date" className={classes.bold + " mt-3"}>
                   Date Of Joining
                 </label>
-                <div>12/2/2022</div>
+                <div>{emp.date_of_joining.substring(0, 10)}</div>
               </div>
               <div>
                 <label htmlFor="designation" className={classes.bold + " mt-3"}>
                   Current Designation
                 </label>
-                <div>Web Developer (Engineer) </div>
+                <div>{emp.current_designation_name} </div>
               </div>
               <div>
                 <label htmlFor="salary" className={classes.bold + " mt-3"}>
                   Current Salary
                 </label>
-                <div>25000</div>
+                <div>{emp.current_salary}</div>
               </div>
               <div>
                 <label htmlFor="number" className={classes.bold + " mt-3"}>
                   WEF Date
                 </label>
-                <div>1/5/2022</div>
+                <div>{emp.wef.substring(0, 10)}</div>
               </div>
               <div>
                 <label htmlFor="director" className={classes.bold + " mt-3"}>
                   Director
                 </label>
-                <div>Mr. Abcdefg</div>
+                <div>{emp.director}</div>
               </div>
             </div>
             <div className="col-lg-4" style={{ paddingLeft: "50px" }}>
               <div>
-                <label htmlFor="old_salary" className={classes.bold + " mt-3"}>
-                  Old Salary
-                </label>
-                <div>20000</div>
-              </div>
-              <div>
                 <label htmlFor="da" className={classes.bold + " mt-3"}>
                   DA 76%
                 </label>
-                <div>1024</div>
+                <div>{Math.round((emp.current_salary/1.86)*0.76)}</div>
               </div>
               <div>
                 <label htmlFor="hra" className={classes.bold + " mt-3"}>
                   HRA 10%
                 </label>
-                <div>2500</div>
+                <div>{Math.round((emp.current_salary/1.86)*0.1)}</div>
               </div>
               <div>
                 <label htmlFor="salary" className={classes.bold + " mt-3"}>
                   Remarks
                 </label>
-                <p>Currently on a holiday. Will resume work on 4/4/2023.</p>
+                <p>{emp.remarks}</p>
               </div>
               <div>
                 <label htmlFor="deduction" className={classes.bold}>
                   % Of Deduction
                 </label>
-                <div>10</div>
+                <div>{emp.deduction}</div>
               </div>
               <div>
                 <label htmlFor="project" className={classes.bold}>
                   Project
                 </label>
-                <div>Nit Calicut Works</div>
+                <div>{emp.project_name}</div>
               </div>
             </div>
           </div>

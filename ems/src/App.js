@@ -17,6 +17,7 @@ import IndividualUpload, {action as addEmployeeAction} from "./pages/IndividualU
 import ShowPage from "./pages/ShowPage";
 import EditEmployee from "./pages/EditEmployee";
 import RemoveAuth from "./components/RemoveAuth";
+import ShowPageUI, {loader as showpageloader} from "./pages/ShowPageUI";
 const router = createBrowserRouter([
   {
     path: "login/",
@@ -67,7 +68,8 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <ShowPage />,
+                element: <ShowPageUI />,
+                loader:showpageloader,
               },
               {
                 path: "edit",
