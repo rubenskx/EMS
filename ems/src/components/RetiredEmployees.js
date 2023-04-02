@@ -6,7 +6,7 @@ const RetiredEmployees = (props) => {
       <Card>
         <p>The Total Number of Retired Employees </p>
         <h1>
-          <AiOutlineHome /> 18
+          <AiOutlineHome /> {props.retired}
         </h1>
       </Card>
     </>

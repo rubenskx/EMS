@@ -1,48 +1,29 @@
-import EmployeesNumber from "../components/EmployeeNumber";
-import MedianAge from "../components/MedianAge";
-import RetiredEmployees from "../components/RetiredEmployees";
-import CalendarComponent from "../components/Calendar";
-import RecentEmployees from "../components/RecentEmployee";
+import EmployeesNumber from "./EmployeeNumber";
+import MedianSalary from "./MedianSalary";
+import RetiredEmployees from "./RetiredEmployees";
+import CalendarComponent from "./Calendar";
+import RecentEmployees from "./RecentEmployee";
 import Spinner from "../UI/Spinner";
 import { useEffect, useState } from "react";
-const employees = [
-  {
-    id: 1,
-    name: "Ruben Sinu",
-    department: "Tech",
-    mobile_no: "+91 891287893",
-  },
-  {
-    id: 2,
-    name: "Abhay Unni",
-    department: "Tech",
-    mobile_no: "+91 891287893",
-  },
-  {
-    id: 3,
-    name: "Vishnu V Nair",
-    department: "Tech",
-    mobile_no: "+91 891287893",
-  },
-];
 
-const HomePage = (props) => {
+const HomePage = ({ results }) => {
   const [time, setTime] = useState("undefined");
   useEffect(() => {
     async function fetchData() {
       const response = await fetch(
-        "/Time/current/zone?timeZone=Asia/Calcutta", {headers:{
-        "accepts":"application/json"
-    }
-  }
+        "/Time/current/zone?timeZone=Asia/Calcutta",
+        {
+          headers: {
+            accepts: "application/json",
+          },
+        }
       );
-      if(!response.ok){
+      if (!response.ok) {
         console.log(response);
-      }
-      else{
-      const timeAPI = await response.json();
-      setTime(timeAPI);
-      console.log(timeAPI);
+      } else {
+        const timeAPI = await response.json();
+        setTime(timeAPI);
+        console.log(timeAPI);
       }
     }
     fetchData();
@@ -57,24 +38,24 @@ const HomePage = (props) => {
           {time && (time.hour > 14 || time.hour <= 5) && (
             <h1>Good Evening, Admin!</h1>
           )}
-          {time && (time.hour >= 6 && time.hour <= 10) && (
+          {time && time.hour >= 6 && time.hour <= 10 && (
             <h1>Good Morning, Admin!</h1>
           )}
-          {time === 'undefined' && <Spinner/>}
+          {time === "undefined" && <Spinner />}
           <div className="col-sm-4">
-            <EmployeesNumber />
+            <EmployeesNumber total={results.total[0].count} />
           </div>
           <div className="col-sm-4">
-            <MedianAge />
+            <MedianSalary salary={results.avg_salary[0].count} />
           </div>
           <div className="col-sm-4">
-            <RetiredEmployees />
+            <RetiredEmployees retired={results.retired[0].count} />
           </div>
         </div>
         <div className="row mt-5">
           <div className="col-lg-8">
             <h3>Recently Viewed</h3>
-            <RecentEmployees employees={employees}/>
+            <RecentEmployees employees={results.new_emp} />
           </div>
           <div className="col-lg-4">
             <h3>Calendar</h3>

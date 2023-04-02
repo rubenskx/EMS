@@ -28,7 +28,7 @@ function runQuery() {
   const date = new Date();
   const day = date.getDate();
   const todayDate = new Date().toISOString().slice(0, 10);
-  const query = `SELECT * FROM employee_data WHERE wef BETWEEN DATE_SUB("${todayDate}", INTERVAL 30 DAY) AND "${todayDate}"`;
+  const query = `SELECT * FROM employee_data WHERE wef BETWEEN DATE_ADD("${todayDate}", INTERVAL 30 DAY) AND "${todayDate}"`;
   console.log(query);
   if (day === 15 || day === 28) {
     connection.query(
@@ -110,6 +110,7 @@ app.post("/excel", async (req, res) => {
       } else {
         const query = `INSERT INTO employee_data (id,name,mobile_no,gender,date_of_joining,qualification,previous_experience,year_of_course_completion,retired,current_salary,wef,deduction,remarks,head_engineer,director,email,department_id,project_id,current_designation_id ,previous_designation_id) VALUES ("${data[i].id}", "${data[i].name}","${data[i].mobile_no}", "${data[i].gender}", "${data[i].date_of_joining}","${data[i].qualification}","${data[i].previous_experience}",${data[i].year_of_course_completion},"${data[i].retired}",${data[i].current_salary},"${data[i].wef}",${data[i].deduction},"${data[i].remarks}","${data[i].head_engineer}","${data[i].director}","${data[i].email}",${deptRes[0].department_id},${projRes[0].project_id},${currDesigRes[0].designation_id}, ${prevDesigRes[0].designation_id}); INSERT INTO salary(salary,wef_date,status,employee_id) VALUES(${data[i].current_salary},"${data[i].wef}","current", "${data[i].id}");`;
         const result = await queryDatabase(query);
+
         console.log("Working!!");
       }
     } catch (error) {
@@ -148,13 +149,40 @@ app.post("/search-form", async (req, res) => {
   }
 });
 
+app.get("/home", async (req, res) => {
+  console.log("home");
+  const [totalEmployees, RetiredEmployees, avgSalary, newEmployees] =
+    await queryDatabase(
+      `SELECT COUNT(*) as count FROM employee_data; SELECT COUNT(*) as count FROM employee_data WHERE retired="Yes"; SELECT AVG(current_salary) as count FROM employee_data; SELECT department.name as department, employee_data.* FROM employee_data, department where employee_data.department_id = department.department_id ORDER BY date_of_joining LIMIT 5;`
+    );
+  console.log(
+    "information",
+    totalEmployees,
+    RetiredEmployees,
+    avgSalary,
+    newEmployees
+  );
+  let results = {};
+  results.total = totalEmployees;
+  results.retired = RetiredEmployees;
+  results.avg_salary = avgSalary;
+  results.new_emp = newEmployees;
+  console.log(results);
+  res.status(200).json({ results });
+});
+
 app.get("/notifications", async (req, res) => {
-  const notifications = await queryDatabase("SELECT * from notifications");
+  const notifications = await queryDatabase("SELECT * from notifications;");
   let array = [];
-  for (let notification of notifications){
-      const resultData = await queryDatabase(notification.query);
-      array.push({ data : resultData, title: `Found ${resultData.length} employees with salary incrementation.`})
+  for (let notification of notifications) {
+    const resultData = await queryDatabase(notification.query);
+    array.push({
+      data: resultData,
+      title: `Found ${resultData.length} employees with salary incrementation.`,
+      notification_id: notification.notification_id,
+    });
   }
+  console.log(array);
   res.status(200).json({ message: "Success", array });
 });
 
@@ -162,6 +190,13 @@ app.get("/increment", async (req, res) => {
   res.status(200).json({ message: "Success", employees });
 });
 
+app.put("/notifications/:id", async (req, res) => {
+  const { id } = req.params;
+  const response = await queryDatabase(
+    `DELETE FROM notifications where notification_id=${id}`
+  );
+  res.status(200).json({ message: "Sucess" });
+});
 app.post("/inform", async (req, res) => {
   const data = req.body;
   console.log(data);

@@ -8,7 +8,7 @@ const EmployeesNumber = (props) => {
           <h1>
             <SlPeople />
             {" "}
-            1533
+            {props.total}
           </h1>
         </Card>
       </>

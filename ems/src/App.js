@@ -1,7 +1,7 @@
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./pages/Root";
-import HomePage from "./pages/HomePage";
+import HomeUI, { loader as homePageLoader} from "./pages/HomeUI";
 import LoginPage from "./pages/LoginPage";
 import Forgotpassword from "./pages/forgotpassword";
 import Otp from "./pages/otp";
@@ -26,18 +26,18 @@ const router = createBrowserRouter([
         element: <LoginPage />,
       },
       {
-        path:"forgotpassword",
-        element:<Forgotpassword/>,
+        path: "forgotpassword",
+        element: <Forgotpassword />,
       },
       {
-        path:"verifyotp",
-        element:<Otp/>,
+        path: "verifyotp",
+        element: <Otp />,
       },
     ],
   },
   {
     path: "logout",
-    element: <RemoveAuth/>,
+    element: <RemoveAuth />,
   },
   {
     path: "/",
@@ -45,7 +45,9 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <HomeUI />,
+        loader: homePageLoader,
+
       },
       {
         path: "excel",
@@ -69,8 +71,8 @@ const router = createBrowserRouter([
               },
               {
                 path: "edit",
-                element: <EditEmployee/>
-              }
+                element: <EditEmployee />,
+              },
             ],
           },
         ],
