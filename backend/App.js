@@ -403,17 +403,17 @@ function sendMail(data,message){
 }
 
 app.post("/inform", async (req, res) => {
+  try {
   const data = req.body;
   console.log(data);
   for( let i=0;i<data.array.length;i++){
     console.log("hi1");
     const response = await sendMail(data.array[i],data.message);
-    if(!response.ok){
-
-     res.status(400).json({message:"error"});
-    }
   }
   res.status(200).json({ message: "Success" });
+}catch(err){
+  res.status(400).json({ message: "error" });
+}
 });
 
 app.get("/upload", async (req, res) => {
