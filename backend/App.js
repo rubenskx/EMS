@@ -25,22 +25,22 @@ connection.connect((err) => {
   console.log("Connected to database");
 });
 
-app.get("/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   const data = req.body;
-  const username = data.username;
-  const password = bcrypt.hashSync(data.password, 10);
+  console.log(data);
   const query = `SELECT * FROM admin_details`;
-  connection.query(query, (err, rows) => {
-    if (err) throw(err);
-    else
-    {
-      if(rows[0][0] === username && rows[0][1] === password){
-        return res.status(201).json({ username: `${username}`, password: `${password}`});
-      } else {
-        return res.status(401).json({ message: `The username or password is incorrect.`});
-      }
+  const result = await queryDatabase(query);
+  if (data.username === result[0].username){
+    const match =  bcrypt.compareSync(data.password, result[0].password);
+    if(match){
+      return res.status(201).json({ message: "Success"});
     }
-  })
+    else{
+      return res.status(422).json({ message: "Wrong passsword!"});
+    }
+  }else{
+    return res.status(422).json({ message: "Wrong password!"});
+  }
 });
 
 function runQuery() {
