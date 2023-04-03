@@ -5,6 +5,7 @@ const mysql = require("mysql");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 const cron = require("node-cron");
+const nodemailer = require('nodemailer');
 const { query } = require("express");
 app.use(cors());
 app.use(express.json());
@@ -365,9 +366,53 @@ app.put("/notifications/:id", async (req, res) => {
   );
   res.status(200).json({ message: "Sucess" });
 });
+
+function sendMail(data,message){
+  return new Promise((resolve, reject) =>{
+    console.log("hi");
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'emsadm2023@gmail.com',
+        pass: 'sbaggvgoqbnozxef'
+      }
+    });
+    
+    
+    var mailOptions = {
+      from: 'emsadm2023@gmail.com',
+      to: `${data.email}`,
+      subject: 'Sending Email using Node.js',
+      text: `Hello ${data.email}, your wef date is dew soon! \n ${message}`,
+      // html: '<h1>Hi Smartherd</h1><p>Your Messsage</p>'        
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        // res.status(400).json({message:"error"});
+        reject(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+        resolve(info.response);
+        // req.flash("success","Email has been sent");
+        
+      }
+    });
+  })
+}
+
 app.post("/inform", async (req, res) => {
   const data = req.body;
   console.log(data);
+  for( let i=0;i<data.array.length;i++){
+    console.log("hi1");
+    const response = await sendMail(data.array[i],data.message);
+    if(!response.ok){
+
+     res.status(400).json({message:"error"});
+    }
+  }
   res.status(200).json({ message: "Success" });
 });
 
