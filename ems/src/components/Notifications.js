@@ -6,11 +6,13 @@ import Modal from "../UI/Modal";
 import classes from "./Notifications.module.css";
 import { json, useNavigate } from "react-router-dom";
 import { HiTrash } from "react-icons/hi";
-
+import Spinner from "../UI/Spinner";
+import Flash from "../UI/Flash";
 const Notifications = ({ notifs }) => {
   const [overlay, setOverlay] = useState(-1);
   const [errors, setErrors] = useState("");
-
+  const [spinner, setSpinner] = useState(false);
+  const [flashMessage, setFlashMessage] = useState("");
   const navigate = useNavigate();
   const excelGenerator = (array) => {
     ExportExcel(array);
@@ -21,13 +23,13 @@ const Notifications = ({ notifs }) => {
   };
 
   const emailGenerator = async (array) => {
-
     const message = document.getElementById("message").value;
     let object = {};
     let idArray = [];
-    array.map((ele) => idArray.push({id : ele.id, email : ele.email  }));
+    array.map((ele) => idArray.push({ id: ele.id, email: ele.email }));
     object.array = idArray;
     object.message = message;
+    setSpinner(true);
     let url = "http://localhost:7000/inform";
     const response = await fetch(url, {
       method: "POST",
@@ -36,8 +38,8 @@ const Notifications = ({ notifs }) => {
       },
       body: JSON.stringify(object),
     });
-
     setOverlay(-1);
+    setSpinner(false);
     if (response.status === 422) {
       setErrors(response.message);
     }
@@ -45,42 +47,57 @@ const Notifications = ({ notifs }) => {
       setErrors("The database cannot be accessed now. Try again!");
       return errors;
     }
+    setFlashMessage("The employees are sucessfully informed through email.");
   };
 
   const startDeleteHandler = async (id) => {
     const proceed = window.confirm("Are you sure?");
     console.log("function", id);
     if (proceed) {
-        const response = await fetch("http://localhost:7000/notifications/" + id, {
+      const response = await fetch(
+        "http://localhost:7000/notifications/" + id,
+        {
           method: "PUT",
-        });
-
-        if (!response.ok) {
-          throw json(
-            { message: "Could not delete event." },
-            {
-              status: 500,
-            }
-          );
         }
-        return navigate("/notifications", { replace: true});
+      );
+
+      if (!response.ok) {
+        throw json(
+          { message: "Could not delete event." },
+          {
+            status: 500,
+          }
+        );
+      }
+      return navigate("/notifications", { replace: true });
     }
-  }
+  };
   return (
     <>
+      {flashMessage !== "" && <Flash>{flashMessage}</Flash>}
       <div className="container">
         {errors !== "" && <p style={{ color: "red" }}>{errors}</p>}
-        {notifs.length === 0 && <p className="text-center mt-5">There are no notifications to show currently.</p>}
+        {notifs.length === 0 && (
+          <p className="text-center mt-5">
+            There are no notifications to show currently.
+          </p>
+        )}
         {notifs.map((ele, id) => (
           <>
             <Card>
-                {ele.title}
+              {ele.title}
               <div style={{ textAlign: "right" }}>
-                <HiTrash size={40} onClick={() => startDeleteHandler(ele.notification_id)}/>
+                <HiTrash
+                  size={40}
+                  onClick={() => startDeleteHandler(ele.notification_id)}
+                />
                 <ButtonUI onClick={() => setOverlay(id)}>
                   Inform Employees
                 </ButtonUI>
-                <ButtonUI onClick={() => excelGenerator(ele.data)} color="green">
+                <ButtonUI
+                  onClick={() => excelGenerator(ele.data)}
+                  color="green"
+                >
                   Export as Excel
                 </ButtonUI>
               </div>
@@ -99,14 +116,24 @@ const Notifications = ({ notifs }) => {
                   defaultValue=""
                   style={{ width: "100%" }}
                 />
-                <div className={classes.actions}>
-                  <ButtonUI color="brown" onClick={() => setOverlay(-1)}>
-                    Close
-                  </ButtonUI>
-                  <ButtonUI onClick={() => emailGenerator(ele.data)} color="green">
-                    Send
-                  </ButtonUI>
-                </div>
+                {!spinner && (
+                  <div className={classes.actions}>
+                    <ButtonUI color="brown" onClick={() => setOverlay(-1)}>
+                      Close
+                    </ButtonUI>
+                    <ButtonUI
+                      onClick={() => emailGenerator(ele.data)}
+                      color="green"
+                    >
+                      Send
+                    </ButtonUI>
+                  </div>
+                )}
+                {spinner && (
+                  <div style={{ textAlign: "right" }}>
+                    <Spinner />
+                  </div>
+                )}
               </Modal>
             )}
           </>
