@@ -74,10 +74,12 @@ const SalaryIncrement = (props) => {
   const handleUpdate = async () => {
     let filterData = [];
     console.log("array", downloadArray);
-    console.log(data);
-    for (let ele of downloadArray) {
-      filterData.push(data[ele - 1]);
-    }
+    console.log(data,"data");
+    filterData=data.filter((ele)=>{
+      if(downloadArray.includes(ele.id)){
+        return ele;
+      }
+    })
 
     const response = await fetch("http://localhost:7000/increment/update", {
       method: "PATCH",

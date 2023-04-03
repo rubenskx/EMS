@@ -5,8 +5,9 @@ const mysql = require("mysql");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 const cron = require("node-cron");
-const nodemailer = require('nodemailer');
 const { query } = require("express");
+const nodemailer = require('nodemailer');
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -17,6 +18,7 @@ const connection = mysql.createConnection({
   password: "",
   database: "ems",
   multipleStatements: "true", //this is required for querying multiple statements in mysql
+  port:8111
 });
 
 connection.connect((err) => {
@@ -72,24 +74,25 @@ cron.schedule("0 0 0 * * *", () => {
 
 app.post("/excel", async (req, res) => {
   const data = req.body;
-  console.log(data);
   var errorString = "";
   for (let i = 0; i < data.length; i++) {
     try {
       const [deptRes, currDesigRes, prevDesigRes, projRes] = await Promise.all([
         queryDatabase(
-          `SELECT department_id FROM department where name="${data[i].department}"`
+          `SELECT department_id FROM department where name="${data[i].department}";`
         ),
         queryDatabase(
-          `SELECT designation_id FROM designation where designation_name="${data[i].current_designation}"`
+          `SELECT designation_id FROM designation where designation_name="${data[i].current_designation}";`
         ),
         queryDatabase(
-          `SELECT designation_id FROM designation where designation_name="${data[i].previous_designation}"`
+          `SELECT designation_id FROM designation where designation_name="${data[i].previous_designation}";`
         ),
         queryDatabase(
-          `SELECT project_id from project where project_name="${data[i].project}"`
+          `SELECT project_id from project where project_name="${data[i].project}";`
         ),
       ]);
+      console.log(deptRes, currDesigRes, prevDesigRes, projRes);
+      console.log(`SELECT designation_id FROM designation where designation_name="${data[i].current_designation}"`,`SELECT project_id from project where project_name="${data[i].project}"`);
 
       if (
         !(
@@ -109,6 +112,7 @@ app.post("/excel", async (req, res) => {
       }
     } catch (error) {
       console.error("Error performing query: " + error.stack);
+      console.log(error.stack);
       errorString += `${data[i].id},`;
     }
   }
@@ -349,11 +353,14 @@ app.get("/increment", async (req, res) => {
 app.patch("/increment/update", async (req, res) => {
   const data = req.body;
   console.log(data);
-  var todayDate = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+  var todayDate = new Date(new Date().setFullYear(new Date().getFullYear()))
+    .toISOString()
+    .slice(0, 10);
+  var wefDate = new Date(new Date().setFullYear(new Date().getFullYear()+1))
     .toISOString()
     .slice(0, 10);
   for (let record of data) {
-    let query = `UPDATE employee_data SET current_salary=${record.increment},wef="${todayDate}" WHERE id="${record.id}"; UPDATE salary set status="old" WHERE employee_id=${record.id}; INSERT INTO SALARY (wef_date,employee_id,salary,status) VALUES("${todayDate}","${record.id}",${record.increment},"current");`;
+    let query = `UPDATE employee_data SET current_salary=${record.increment},wef="${wefDate}" WHERE id="${record.id}"; UPDATE salary set status="old" WHERE employee_id="${record.id}"; INSERT INTO SALARY (wef_date,employee_id,salary,status) VALUES("${todayDate}","${record.id}",${record.increment},"current");`;
     console.log(query);
     const response = await queryDatabase(query);
   }
@@ -447,7 +454,7 @@ app.post("/upload", async (req, res) => {
       experience += `${data.years} years`;
     }
 
-    const query = `INSERT INTO employee_data (id,name,gender,department_id,email,mobile_no,date_of_joining,current_designation_id,previous_designation_id,previous_experience,qualification,year_of_course_completion,retired,wef,current_salary,remarks,head_engineer,director,project_id,deduction) VALUES("${data.id}","${data.title}", "${data.gender}", ${data.department}, "${data.email}", "${data.mobile_no}", "${data.date}",  ${data.currentDesignation}, ${data.previousDesignation}, "${experience}", "${data.qualify}", ${data.year_of_course}, "${retired}", "${data.wef_date}", ${data.salary}, "${remarks}", "${data.head_engineer}", "${data.director}", ${data.project}, ${data.deduction}); INSERT INTO salary (salary,status,wef_date,employee_id) VALUES(${data.salary}, "current", "${data.wef_date}", "${data.id}")`;
+    const query = `INSERT INTO employee_data (id,name,gender,department_id,email,mobile_no,date_of_joining,current_designation_id,previous_designation_id,previous_experience,qualification,year_of_course_completion,retired,wef,current_salary,remarks,head_engineer,director,project_id,deduction) VALUES("${data.id}","${data.title}", "${data.gender}", ${data.department}, "${data.email}", "${data.mobile_no}", "${data.date}",  ${data.currentDesignation}, ${data.previousDesignation}, "${experience}", "${data.qualify}", ${data.year_of_course}, "${retired}", "${data.wef_date}", ${data.salary}, "${remarks}", "${data.head_engineer}", "${data.director}", ${data.project}, ${data.deduction}); INSERT INTO salary (salary,status,wef_date,employee_id) VALUES(${data.salary}, "current", "${data.date}", "${data.id}")`;
     const response = await queryDatabase(query);
     res.status(200).json({ message: "Success" });
   } catch (err) {
@@ -492,7 +499,7 @@ app.get("/show/:id", async (req, res) => {
   INNER JOIN designation AS previous_designation ON employee_data.previous_designation_id = previous_designation.designation_id
   INNER JOIN designation AS current_designation ON employee_data.current_designation_id = current_designation.designation_id
   INNER JOIN project ON employee_data.project_id = project.project_id
-  WHERE id=${id};SELECT * FROM salary WHERE employee_id=${id};`);
+  WHERE id="${id}";SELECT * FROM salary WHERE employee_id="${id}";`);
   const [totalDepartments, totalProjects, totalDesignation] =
     await queryDatabase(
       "SELECT * FROM department; SELECT * FROM project; SELECT * FROM designation;"
