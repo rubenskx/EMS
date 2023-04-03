@@ -7,7 +7,7 @@ const RecentEmployees = (props) => {
   return (
     <Fragment>
       <Card>
-        <div className={classes.table} >
+        <div className={classes.table}>
           <table>
             <tr className={classes.row + " " + classes.header}>
               <th>ID</th>
@@ -38,28 +38,42 @@ const RecentEmployees = (props) => {
                 <td>{ele.id}</td>
                 <NavLink
                   to={`/search-form/${ele.id}`}
-                  style={{ textDecoration: "none", color: "black" }}
+                  style={{
+                    textDecoration: "none",
+                    color: "black",
+                    marginTop: "20px",
+                  }}
                 >
-                  <td>{ele.emp_name}</td>
+                  <td style={{ paddingTop: "30px" }}>
+                    {ele.emp_name ? ele.emp_name : ele.name}
+                  </td>
                 </NavLink>
                 <td>{ele.mobile_no}</td>
                 <td>{ele.gender}</td>
-                <td>{ele.date_of_joining.substring(0,10)}</td>
+                <td>{ele.date_of_joining.substring(0, 10)}</td>
                 <td>{ele.qualification}</td>
                 <td>{ele.previous_experience}</td>
                 <td>{ele.year_of_course_completion}</td>
-                <td>{ele.previous_designation_name ? ele.previous_designation_name :ele.previous_designation }</td>
+                <td>
+                  {ele.previous_designation_name
+                    ? ele.previous_designation_name
+                    : ele.previous_designation}
+                </td>
                 <td>{ele.retired}</td>
                 <td>{ele.current_salary}</td>
-                <td>{ele.wef.substring(0,10)}</td>
+                <td>{ele.wef.substring(0, 10)}</td>
                 <td>{ele.deduction}</td>
                 <td>{ele.remarks}</td>
-                <td>{ele.head_engineer}</td>
+                <td>{ele.head_engineer ? ele.head_engineer : " "}</td>
                 <td>{ele.director}</td>
                 <td>{ele.email}</td>
                 <td>{ele.dept_name ? ele.dept_name : ele.name}</td>
-                <td>{ele.project_name}</td>
-                <td>{ele.current_designation_name ? ele.previous_designation_name :ele.current_designation }</td>
+                <td>{ele.project_name ?ele.project_name : ele.project }</td>
+                <td>
+                  {ele.current_designation_name
+                    ? ele.previous_designation_name
+                    : ele.current_designation}
+                </td>
                 {props.addArray &&
                   props.addArray.map((keys) => <td>{ele[keys]}</td>)}
                 {props.checked && (

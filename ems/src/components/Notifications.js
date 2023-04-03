@@ -21,6 +21,7 @@ const Notifications = ({ notifs }) => {
   };
 
   const emailGenerator = async (array) => {
+
     const message = document.getElementById("message").value;
     let object = {};
     let idArray = [];

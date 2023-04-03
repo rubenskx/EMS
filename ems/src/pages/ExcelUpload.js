@@ -30,6 +30,7 @@ const ExcelUpload = (props) => {
       const data = new Uint8Array(e.target.result);
       const workbook = XLSX.read(data, { type: "array" });
       const parsedData = parse(workbook).map((element) => element.data);
+      console.log(parsedData, "parsed!");
       setData(parsedData[0]);
     };
     reader.readAsArrayBuffer(file);

@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import classes from "./NavigationBar.module.css";
 import {MdOutlineNotificationsActive } from "react-icons/md";
-
+import { RxExit } from "react-icons/rx";
 const NavigationBar = () => {
   return (
     <nav
@@ -50,9 +50,9 @@ const NavigationBar = () => {
                   aria-expanded="false"
                   className={classes.dropdown}
                 >
-                  Employees
+                  <span style={{ color: "grey" }}>Employees</span>
                 </a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu" style={{ backgroundColor: "black" }}>
                   <li>
                     <div class="dropdown-item">
                       <NavLink
@@ -102,16 +102,6 @@ const NavigationBar = () => {
               </li>
               <li class="nav-item">
                 <NavLink
-                  to="/logout"
-                  className={({ isActive }) =>
-                    (isActive ? classes.active + " " : " ") + classes.links
-                  }
-                >
-                  Logout
-                </NavLink>
-              </li>
-              <li class="nav-item">
-                <NavLink
                   to="/notifications"
                   className={({ isActive }) =>
                     (isActive ? classes.active + " " : " ") + classes.links
@@ -122,7 +112,18 @@ const NavigationBar = () => {
                   </span>
                 </NavLink>
               </li>
-              <li class="nav-item"></li>
+              <li class="nav-item">
+                <NavLink
+                  to="/logout"
+                  className={({ isActive }) =>
+                    (isActive ? classes.active + " " : " ") + classes.links
+                  }
+                >
+                  <span>
+                    <RxExit size={30} />
+                  </span>
+                </NavLink>
+              </li>
             </ul>
           </div>
         </div>

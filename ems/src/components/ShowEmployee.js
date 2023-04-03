@@ -1,5 +1,6 @@
 import Card from "../UI/Card";
 import { AiOutlineEdit } from "react-icons/ai";
+import { MdDeleteOutline } from "react-icons/md";
 import classes from "./ShowEmployee.module.css";
 import { useNavigate } from "react-router-dom";
 import LineChart from "./Chart";
@@ -11,9 +12,27 @@ const ShowEmployee = (props) => {
   const salaryDetails=props.results.salary_details
   console.log(emp,salaryDetails);
   const [toggler, setToggler] = useState(false);
+
   const editPageGenerator = (id) => {
     navigate(`/search-form/${id}/edit`);
   };
+
+  const deleteEmployeeGenerator = async (id) => {
+    let url = "http://localhost:7000/show/" + id; 
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if(!response.ok || response.status === 422){
+      console.log("error data!");
+      return;
+    }
+
+    navigate("/");
+  }
+
   return (
     <>
       <div className="container">
@@ -25,6 +44,7 @@ const ShowEmployee = (props) => {
             </div>
             <div style={{ textAlign: "right" }} className="col-lg-1">
               <AiOutlineEdit size={30} onClick={() => editPageGenerator(emp.id)} />
+              <MdDeleteOutline style={{ marginLeft: "10px"}} size={30} onClick={() => deleteEmployeeGenerator(emp.id)}/>
             </div>
           </div>
           <div className="row container">
@@ -66,7 +86,7 @@ const ShowEmployee = (props) => {
                 >
                   Head Enginner
                 </label>
-                <div>{emp.head_engineer}</div>
+                <div>{emp.head_engineer ? emp.head_engineer : "NIL "}</div>
               </div>
             </div>
             <div className="col-lg-4">
@@ -104,7 +124,7 @@ const ShowEmployee = (props) => {
                 <label htmlFor="director" className={classes.bold + " mt-3"}>
                   Director
                 </label>
-                <div>{emp.director}</div>
+                <div>{emp.director ? emp.director : "NIL"}</div>
               </div>
             </div>
             <div className="col-lg-4" style={{ paddingLeft: "50px" }}>
@@ -124,7 +144,7 @@ const ShowEmployee = (props) => {
                 <label htmlFor="salary" className={classes.bold + " mt-3"}>
                   Remarks
                 </label>
-                <p>{emp.remarks}</p>
+                <p>{emp.remarks ? emp.remarks : "NIL"}</p>
               </div>
               <div>
                 <label htmlFor="deduction" className={classes.bold}>

@@ -51,7 +51,7 @@ function SearchForm({ method, event, formdata }) {
 
   return (
     <>
-      {data && data.result && (
+      {data && data.result && data.result.data.length && (
         <>
           <div className="container mt-3">
             <div>
@@ -74,6 +74,7 @@ function SearchForm({ method, event, formdata }) {
           </div>
         </>
       )}
+      {data && data.result && data.result.data.length === 0 && (<p className="text-center">There were no results to your search.</p>)}
       {(!data || !data.result) && (
         <Form className={classes.form} method={"POST"}>
           <Card>

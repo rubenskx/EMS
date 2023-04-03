@@ -3,13 +3,13 @@
 }
 
 .active{
-
-    border-bottom: 1px solid white;
+    font-weight: bold;
+    color:white !important;
 }
 
 .links{
     text-decoration: none;
-    color: white;
+    color: grey;
     padding:5px;
     margin-left: 10px;
     
@@ -17,7 +17,7 @@
 
 .links:hover, .dropdown:hover {
         text-decoration: none;
-        color: white;
+        color: grey;
 }
 
 .logo{
