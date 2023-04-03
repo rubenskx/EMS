@@ -2,72 +2,103 @@ import ButtonUI from "../UI/ButtonUI";
 import Card from "../UI/Card";
 import { useState } from "react";
 import RecentEmployees from "../components/RecentEmployee";
-import ExportExcel
- from "../utils/ExportExcel";
-const SalaryIncrement =  (props) => {
+import ExportExcel from "../utils/ExportExcel";
+import { useNavigate } from "react-router-dom";
+const SalaryIncrement = (props) => {
+  const [errors, setErrors] = useState("");
+  const [data, setData] = useState([]);
+  const [downloadArray, setDownloadArray] = useState([]);
+  const navigate = useNavigate();
+  const incrementHandler = async () => {
+    setData([]);
+    const date_before = document.getElementById("date_before").value;
+    const date_after = document.getElementById("date_after").value;
+    const before = new Date(date_before);
+    const after = new Date(date_after);
 
-    const [errors, setErrors] = useState("");
-    const [data, setData] = useState([]);
-    const [downloadArray, setDownloadArray] = useState([]);
-    const incrementHandler = async () => {
-      setData([]);
-      const date_before = document.getElementById("date_before").value;
-      const date_after = document.getElementById("date_after").value;
-      const before = new Date(date_before);
-      const after = new Date(date_after);
-
-      if (date_before === "" || date_after  === "") {
-        console.log("error");
-        setErrors("Please enter a valid date.");
-        return;
-      }
-      if (before > after) {
-        console.log("error");
-        setErrors("Incorrect range provided.");
-        return;
-      }
-      console.log(date_after,date_before,before,after);
-      const response = await fetch("http://localhost:7000/increment?"+new URLSearchParams({
-        before: date_before,
-        after: date_after,
-    }));
-      if(!response.ok){
-        setErrors("There is something wrong with database right now. Please try again.");
-        return;
-      }
-
-      const employeeData = await response.json();
-      console.log(employeeData);
-      setErrors("");
-      setData(employeeData.empData);
-    
-    };
-
-    const excelGenerator = () => {
-        let filterData = [];
-        console.log("array",downloadArray);
-        console.log(data);
-        for (let ele of downloadArray){
-            filterData.push(data[ele - 1]);
-        
-        }
-
-        console.log("filtered", filterData);
-        ExportExcel(filterData);
+    if (date_before === "" || date_after === "") {
+      console.log("error");
+      setErrors("Please enter a valid date.");
+      return;
+    }
+    if (before > after) {
+      console.log("error");
+      setErrors("Incorrect range provided.");
+      return;
+    }
+    console.log(date_after, date_before, before, after);
+    const response = await fetch(
+      "http://localhost:7000/increment?" +
+        new URLSearchParams({
+          before: date_before,
+          after: date_after,
+        })
+    );
+    if (!response.ok) {
+      setErrors(
+        "There is something wrong with database right now. Please try again."
+      );
+      return;
     }
 
-    const dataFilter = (id) => {
-      if(downloadArray.includes(id)){
-        let arr = downloadArray.filter((item) => item !== id);
-        setDownloadArray(arr);
-      }
-      else{
-        let arr = [...downloadArray];
-        arr.push(id);
-        setDownloadArray(arr);
-      }
-      // console.log(downloadArray);
+    const employeeData = await response.json();
+    console.log(employeeData);
+    setErrors("");
+    setData(employeeData.empData);
+  };
+
+  const excelGenerator = () => {
+    let filterData = [];
+    console.log("array", downloadArray);
+    console.log(data);
+    for (let ele of downloadArray) {
+      filterData.push(data[ele - 1]);
     }
+
+    console.log("filtered", filterData);
+    ExportExcel(filterData);
+  };
+
+  const dataFilter = (id) => {
+    if (downloadArray.includes(id)) {
+      let arr = downloadArray.filter((item) => item !== id);
+      setDownloadArray(arr);
+    } else {
+      let arr = [...downloadArray];
+      arr.push(id);
+      setDownloadArray(arr);
+    }
+    // console.log(downloadArray);
+  };
+
+  const handleUpdate = async () => {
+    let filterData = [];
+    console.log("array", downloadArray);
+    console.log(data);
+    for (let ele of downloadArray) {
+      filterData.push(data[ele - 1]);
+    }
+
+    const response = await fetch("http://localhost:7000/increment/update", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(filterData),
+    });
+  
+  if(!response.ok){
+    setErrors("There is an error with the database.")
+    return;
+  }
+  if(response.status === 422){
+    setErrors("Incorrect database format.");
+    return;
+  }
+    navigate("/",{replace: true})
+  };
+
+
   return (
     <>
       <div className="container mt-5">
@@ -103,11 +134,18 @@ const SalaryIncrement =  (props) => {
         {data.length > 0 && (
           <div className="mt-5">
             <h3 className="text-center">Search Results</h3>
-            <div style={{ textAlign: "right"}}>
-            <ButtonUI onClick={excelGenerator} color="green">Export as Excel</ButtonUI>
-            <ButtonUI>Update</ButtonUI>
+            <div style={{ textAlign: "right" }}>
+              <ButtonUI onClick={excelGenerator} color="green">
+                Export as Excel
+              </ButtonUI>
+              <ButtonUI onClick={handleUpdate}>Update</ButtonUI>
             </div>
-            <RecentEmployees employees={data} addArray={["increment"]} checked="yes" onClick={dataFilter}/>
+            <RecentEmployees
+              employees={data}
+              addArray={["increment"]}
+              checked="yes"
+              onClick={dataFilter}
+            />
           </div>
         )}
       </div>

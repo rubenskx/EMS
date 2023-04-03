@@ -24,7 +24,7 @@ const Notifications = ({ notifs }) => {
     const message = document.getElementById("message").value;
     let object = {};
     let idArray = [];
-    array.map((ele) => idArray.push(ele.id));
+    array.map((ele) => idArray.push({id : ele.id, email : ele.email  }));
     object.array = idArray;
     object.message = message;
     let url = "http://localhost:7000/inform";
@@ -102,7 +102,7 @@ const Notifications = ({ notifs }) => {
                   <ButtonUI color="brown" onClick={() => setOverlay(-1)}>
                     Close
                   </ButtonUI>
-                  <ButtonUI onClick={() => emailGenerator(ele)} color="green">
+                  <ButtonUI onClick={() => emailGenerator(ele.data)} color="green">
                     Send
                   </ButtonUI>
                 </div>

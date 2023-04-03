@@ -6,7 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import Forgotpassword from "./pages/forgotpassword";
 import Otp from "./pages/otp";
 import ExcelUpload from "./pages/ExcelUpload";
-import SearchPage from "./pages/SearchPage";
+import SearchPage, {loader as searchPageLoader} from "./pages/SearchPage";
 import {action as searchFormAction} from "./components/SearchForm";
 import RequireAuth from "./components/RequireAuth";
 import NotificationPage, {
@@ -60,6 +60,7 @@ const router = createBrowserRouter([
             index: true,
             element: <SearchPage />,
             action: searchFormAction,
+            loader: searchPageLoader,
           },
           {
             path: ":id",
