@@ -101,6 +101,7 @@ app.post("/excel", async (req, res) => {
         errorString += `${data[i].id},`;
       } else {
         const query = `INSERT INTO employee_data (id,name,mobile_no,gender,date_of_joining,qualification,previous_experience,year_of_course_completion,retired,current_salary,wef,deduction,remarks,head_engineer,director,email,department_id,project_id,current_designation_id ,previous_designation_id) VALUES ("${data[i].id}", "${data[i].name}","${data[i].mobile_no}", "${data[i].gender}", "${data[i].date_of_joining}","${data[i].qualification}","${data[i].previous_experience}",${data[i].year_of_course_completion},"${data[i].retired}",${data[i].current_salary},"${data[i].wef}",${data[i].deduction},"${data[i].remarks}","${data[i].head_engineer}","${data[i].director}","${data[i].email}",${deptRes[0].department_id},${projRes[0].project_id},${currDesigRes[0].designation_id}, ${prevDesigRes[0].designation_id}); INSERT INTO salary(salary,wef_date,status,employee_id) VALUES(${data[i].current_salary},"${data[i].wef}","current", "${data[i].id}");`;
+        console.log(query);
         const result = await queryDatabase(query);
 
         console.log("Working!!");
@@ -485,6 +486,20 @@ app.patch("/show/:id", async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(422).json({ error: err });
+  }
+});
+
+app.put("/show/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id, "id");
+    const result = await queryDatabase(
+      `SET FOREIGN_KEY_CHECKS = 0; DELETE FROM employee_data where id="${id}";`
+    );
+    res.status(200).json({ message: "Sucess" });
+  } catch (err) {
+    console.log(err);
+    res.status(422).json({ message: "error" });
   }
 });
 app.listen(7000, () => {
