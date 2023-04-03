@@ -21,6 +21,7 @@ function SearchForm({ method, event }) {
   const navigate = useNavigate();
   const isSubmitting = navigation.state === "submitting";
   const data = useActionData();
+  console.log("result", data);
   const [toggler, setToggler] = useState(0);
   const [displayCourse, setDisplayCourse] = useState(false);
   const [filterOptions, setFilterOptions] = useState([options[1]]);
@@ -30,7 +31,7 @@ function SearchForm({ method, event }) {
   
   const excelGenerator = () => {
     if(data && data.result){
-    const { employees }=  data.result;
+    const employees =  data.result.data;
     console.log(filterOptions);
     console.log(employees);
     const filteredArray = employees.map((obj) =>
@@ -75,7 +76,7 @@ function SearchForm({ method, event }) {
                 <ButtonUI onClick={excelGenerator}>Export as Excel</ButtonUI>
               </div>
             </div>
-            <RecentEmployees employees={data.result.employees} />
+            <RecentEmployees employees={data.result.data} />
           </div>
         </>
       )}
@@ -99,15 +100,15 @@ function SearchForm({ method, event }) {
                 class="form-select"
                 aria-label="Default select example"
               >
-                <option disabled selected value>
-                  -- select an option --
+                <option selected>
+                  Choose...
                 </option>
-                <option value="1">Male</option>
-                <option value="2">Female</option>
-                <option value="3">Unspecified</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
               </select>
             </p>
-            <p>
+            {/* <p>
               <label htmlFor="department">Department</label>
               <input
                 id="department"
@@ -115,6 +116,18 @@ function SearchForm({ method, event }) {
                 name="department"
                 defaultValue=""
               />
+            </p> */}
+            <p>
+              <label htmlFor="department">Department</label>
+              <select
+                class="form-select"
+                aria-label="Default select example"
+                name="department"
+              >
+                <option selected>Choose...</option>
+                <option value="1">construction</option>
+                <option value="2">transportation</option>
+              </select>
             </p>
             <div className="row">
               <p className="col-lg-8">
@@ -162,7 +175,7 @@ function SearchForm({ method, event }) {
                 </div>
               </p>
             </div>
-            <p>
+            {/* <p>
               <label htmlFor="previousDesignation">Previous Designation</label>
               <input
                 id="name"
@@ -170,16 +183,47 @@ function SearchForm({ method, event }) {
                 name="previousDesignation"
                 defaultValue=""
               />
-            </p>
+            </p> */}
             <p>
-              <label htmlFor="currentDesignation">Current Designation</label>
+              <label htmlFor="previousDesignation">Previous Designation</label>
+              <select
+                name="previous_designation"
+                class="form-select"
+                aria-label="Default select example"
+              >
+                <option selected>
+                  Choose...
+                </option>
+                <option value="1">King</option>
+                <option value="2">Beggar</option>
+                <option value="3">Queen</option>
+              </select>
+            </p>
+            {/*<p>
+               <label htmlFor="currentDesignation">Current Designation</label>
               <input
                 id="name"
                 type="text"
                 name="currentDesignation"
                 defaultValue=""
               />
+            </p> */}
+            <p>
+              <label htmlFor="currentDesignation">Current Designation</label>
+              <select
+                name="current_designation"
+                class="form-select"
+                aria-label="Default select example"
+              >
+                <option selected>
+                  Choose...
+                </option>
+                <option value="1">King</option>
+                <option value="2">Beggar</option>
+                <option value="3">Queen</option>
+              </select>
             </p>
+            <p></p>
             <p className="row">
               <label htmlFor="experience">Experience</label>
               <div className="row col-lg-6">
@@ -235,20 +279,17 @@ function SearchForm({ method, event }) {
                 )}
               </div>
             </p>
+
             <p>
-              <label htmlFor="qualify">Qualification</label>
-              <select
-                name="qualify"
-                class="form-select"
-                aria-label="Default select example"
-                onClick={() => setDisplayCourse(true)}
-              >
-                <option selected>Choose...</option>
-                <option value="1">B Tech - Civil</option>
-                <option value="2">BE Civil</option>
-                <option value="3">Diploma Civil</option>
-              </select>
+              <label htmlFor="qualification">Qualification</label>
+              <input
+                id="qualification"
+                type="text"
+                name="qualification"
+                defaultValue=""
+              />
             </p>
+            
             {displayCourse && (
               <p>
                 <label htmlFor="year-of-course">Year of Completion</label>
@@ -274,7 +315,7 @@ function SearchForm({ method, event }) {
                   Retired?
                 </label>
               </div>
-              <div className="col-lg-4">
+              {/* <div className="col-lg-4">
                 <label htmlFor="hra" style={{ display: "inline" }}>
                   HRA:
                 </label>
@@ -285,8 +326,8 @@ function SearchForm({ method, event }) {
                   id="hra"
                   placeholder="HRA 10%"
                 />
-              </div>
-              <div className={"col-lg-3"}>
+              </div> */}
+              {/* <div className={"col-lg-3"}>
                 <label htmlFor="da" style={{ display: "inline" }}>
                   DA:
                 </label>
@@ -297,7 +338,7 @@ function SearchForm({ method, event }) {
                   id="da"
                   placeholder="DA 76%"
                 />
-              </div>
+              </div> */}
               <p>
                 <label htmlFor="wef_date">WEF</label>
                 <input id="wef" type="date" name="wef_date" />
@@ -343,7 +384,7 @@ function SearchForm({ method, event }) {
                 defaultValue=""
               />
             </p>
-            <p>
+            {/* <p>
               <label htmlFor="head">Head Engineer</label>
               <select
                 class="form-select"
@@ -354,8 +395,20 @@ function SearchForm({ method, event }) {
                 <option value="1">SHINTO PAUL</option>
                 <option value="2">BK GOPAKUMAR</option>
               </select>
+            </p> */}
+
+<p>
+              <label htmlFor="head">Head Engineer</label>
+              <input
+                id="head"
+                type="text"
+                name="head"
+                defaultValue=""
+              />
             </p>
-            <p>
+            
+
+            {/* <p>
               <label htmlFor="director">Director</label>
               <select
                 class="form-select"
@@ -366,15 +419,27 @@ function SearchForm({ method, event }) {
                 <option value="1">SUREENDRAN MM</option>
                 <option value="2">AJI KTK</option>
               </select>
-            </p>
-            <p className="mt-2">
-              <label htmlFor="project">Project Name (Keywords) </label>
-              <textarea
-                id="project"
+            </p> */}
+            <p>
+              <label htmlFor="director">Director</label>
+              <input
+                id="director"
                 type="text"
-                name="project"
+                name="director"
                 defaultValue=""
               />
+            </p>
+            <p>
+              <label htmlFor="director">Project Name</label>
+              <select
+                class="form-select"
+                aria-label="Default select example"
+                name="projectid"
+              >
+                <option selected>Choose...</option>
+                <option value="1">project1</option>
+                <option value="2">project2</option>
+              </select>
             </p>
             <div className={classes.actions}>
               <button
@@ -434,7 +499,7 @@ export async function action({ request, params }) {
   }
 
   const result = await response.json();
-  console.log(result);
+  console.log("result action",result);
   errors.result = result;
   return errors;
 }
