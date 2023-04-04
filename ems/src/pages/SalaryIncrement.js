@@ -4,6 +4,7 @@ import { useState } from "react";
 import RecentEmployees from "../components/RecentEmployee";
 import ExportExcel from "../utils/ExportExcel";
 import { useNavigate } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
 const SalaryIncrement = (props) => {
   const [errors, setErrors] = useState("");
   const [data, setData] = useState([]);
@@ -57,6 +58,11 @@ const SalaryIncrement = (props) => {
 
     console.log("filtered", filterData);
     ExportExcel(filterData);
+  };
+
+  const backButtonHandler = () => {
+    console.log("hello!");
+    setData([]);
   };
 
   const dataFilter = (id) => {
@@ -135,7 +141,10 @@ const SalaryIncrement = (props) => {
         </Card>
         {data.length > 0 && (
           <div className="mt-5">
-            <h3 className="text-center">Search Results</h3>
+            <h2>
+              <IoIosArrowBack size={40} onClick={() => backButtonHandler()} />
+              Search Results
+            </h2>
             <div style={{ textAlign: "right" }}>
               <ButtonUI onClick={excelGenerator} color="green">
                 Export as Excel

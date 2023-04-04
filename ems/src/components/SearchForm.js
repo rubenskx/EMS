@@ -12,6 +12,7 @@ import ButtonUI from "../UI/ButtonUI";
 import Select from "react-select";
 import options from "../utils/fieldOptions";
 import ExportExcel from "../utils/ExportExcel";
+import { IoIosArrowBack  } from "react-icons/io";
 
 function SearchForm({ method, event, formdata }) {
   const navigation = useNavigation();
@@ -25,6 +26,10 @@ function SearchForm({ method, event, formdata }) {
   function cancelHandler() {
     navigate("..");
   }
+
+  const backButtonHandler = () => {
+      navigate("/search-form");
+  };
 
   const excelGenerator = () => {
     if (data && data.result) {
@@ -53,6 +58,9 @@ function SearchForm({ method, event, formdata }) {
     <>
       {data && data.result && data.result.data.length && (
         <>
+          <div className="mt-3 mx-4">
+            <IoIosArrowBack size={40} onClick={() => backButtonHandler()}/>
+          </div>
           <div className="container mt-3">
             <div>
               <h1>Search Results</h1>
@@ -74,7 +82,9 @@ function SearchForm({ method, event, formdata }) {
           </div>
         </>
       )}
-      {data && data.result && data.result.data.length === 0 && (<p className="text-center">There were no results to your search.</p>)}
+      {data && data.result && data.result.data.length === 0 && (
+        <p className="text-center">There were no results to your search.</p>
+      )}
       {(!data || !data.result) && (
         <Form className={classes.form} method={"POST"}>
           <Card>

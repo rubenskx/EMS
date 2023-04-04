@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import RecentEmployees from "../components/RecentEmployee";
 import ButtonUI from "../UI/ButtonUI";
 import ExportExcel from "../utils/ExportExcel";
+import { IoIosArrowBack } from "react-icons/io";
 import Card from "../UI/Card";
 const XLSX = require("xlsx");
 
@@ -22,6 +23,11 @@ const ExcelUpload = (props) => {
     }));
   };
 
+    const backButtonHandler = () => {
+      console.log("hello!");
+      setData([]);
+    };
+    
   const submitHandler = (event) => {
     const file = event.dataTransfer.files[0];
 
@@ -93,7 +99,7 @@ const ExcelUpload = (props) => {
       <div className="container mt-5">
         <Card>
           <h3>Download the template before uploading onto the website.</h3>
-          {error!=="" && <p style={{ color: "red"}}>{error}</p>}
+          {error !== "" && <p style={{ color: "red" }}>{error}</p>}
           <div style={{ textAlign: "right" }}>
             <ButtonUI color="green" onClick={() => templateLoader()}>
               Download
@@ -103,7 +109,10 @@ const ExcelUpload = (props) => {
         <DragAndDrop onFileDrop={submitHandler} />
         {exceldata.length > 0 && (
           <div className="mt-5">
-            <h2>{`Found ${exceldata.length} Employees.`}</h2>
+            <h2>
+              <IoIosArrowBack size={40} onClick={() => backButtonHandler()} />
+              {`Found ${exceldata.length} Employees.`}
+            </h2>
             <div style={{ textAlign: "right" }}>
               <ButtonUI onClick={sendDataHandler}>Submit</ButtonUI>
             </div>
