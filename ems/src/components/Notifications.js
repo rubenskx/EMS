@@ -8,6 +8,8 @@ import { json, useNavigate } from "react-router-dom";
 import { HiTrash } from "react-icons/hi";
 import Spinner from "../UI/Spinner";
 import Flash from "../UI/Flash";
+import styles from "./SearchForm.module.css";
+
 const Notifications = ({ notifs }) => {
   const [overlay, setOverlay] = useState(-1);
   const [errors, setErrors] = useState("");
@@ -22,6 +24,10 @@ const Notifications = ({ notifs }) => {
     setOverlay(id);
   };
 
+  const closeFlash = () => {
+    console.log("hello!!");
+    setErrors("");
+  }
   const emailGenerator = async (array) => {
     const message = document.getElementById("message").value;
     let object = {};
@@ -74,7 +80,7 @@ const Notifications = ({ notifs }) => {
   };
   return (
     <>
-      {flashMessage !== "" && <Flash>{flashMessage}</Flash>}
+      {flashMessage !== "" && <Flash type="warn" onClick={closeFlash}>{flashMessage}</Flash>}
       <div className="container">
         {errors !== "" && <p style={{ color: "red" }}>{errors}</p>}
         {notifs.length === 0 && (
@@ -92,13 +98,13 @@ const Notifications = ({ notifs }) => {
                   onClick={() => startDeleteHandler(ele.notification_id)}
                 />
                 <ButtonUI onClick={() => setOverlay(id)}>
-                  Inform Employees
+                  Inform 
                 </ButtonUI>
                 <ButtonUI
                   onClick={() => excelGenerator(ele.data)}
                   color="green"
                 >
-                  Export as Excel
+                  Export
                 </ButtonUI>
               </div>
             </Card>

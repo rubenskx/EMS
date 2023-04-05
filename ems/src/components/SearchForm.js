@@ -59,7 +59,7 @@ function SearchForm({ method, event, formdata }) {
       {data && data.result && data.result.data.length && (
         <>
           <div className="mt-3 mx-4">
-            <IoIosArrowBack size={40} onClick={() => backButtonHandler()}/>
+            <IoIosArrowBack size={40} onClick={() => backButtonHandler()} />
           </div>
           <div className="container mt-3">
             <div>
@@ -373,16 +373,16 @@ function SearchForm({ method, event, formdata }) {
               </select>
             </p>
             <div className={classes.actions}>
-              <button
-                type="button"
+              <ButtonUI type="button"
                 onClick={cancelHandler}
                 disabled={isSubmitting}
+                color="red"
               >
                 Cancel
-              </button>
-              <button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Searching..." : "Search"}
-              </button>
+              </ButtonUI>
+              <ButtonUI type="submit" disabled={isSubmitting} color="green">
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </ButtonUI>
             </div>
           </Card>
         </Form>

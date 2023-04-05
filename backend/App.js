@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const cors = require("cors");
 const cron = require("node-cron");
 const { query } = require("express");
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
 app.use(cors());
 app.use(express.json());
@@ -91,7 +91,10 @@ app.post("/excel", async (req, res) => {
         ),
       ]);
       console.log(deptRes, currDesigRes, prevDesigRes, projRes);
-      console.log(`SELECT designation_id FROM designation where designation_name="${data[i].current_designation}"`,`SELECT project_id from project where project_name="${data[i].project}"`);
+      console.log(
+        `SELECT designation_id FROM designation where designation_name="${data[i].current_designation}"`,
+        `SELECT project_id from project where project_name="${data[i].project}"`
+      );
 
       if (
         !(
@@ -238,7 +241,7 @@ app.get("/home", async (req, res) => {
   console.log("home");
   const [totalEmployees, RetiredEmployees, avgSalary, newEmployees] =
     await queryDatabase(
-      `SELECT COUNT(*) as count FROM employee_data; SELECT COUNT(*) as count FROM employee_data WHERE retired="Yes"; SELECT AVG(current_salary) as count FROM employee_data; SELECT department.name as name, employee_data.name as emp_name, t.designation_name as previous_designation, s.designation_name as current_designation, employee_data.*, project.project_name as project_name FROM employee_data, department,designation as s, designation as t, project where employee_data.department_id = department.department_id AND employee_data.current_designation_id = s.designation_id AND employee_data.previous_designation_id = t.designation_id AND employee_data.project_id = project.project_id ORDER BY date_of_joining LIMIT 5;`
+      `SELECT COUNT(*) as count FROM employee_data; SELECT COUNT(*) as count FROM employee_data WHERE retired="Yes"; SELECT AVG(current_salary) as count FROM employee_data; SELECT department.name as name, employee_data.name as emp_name, t.designation_name as previous_designation, s.designation_name as current_designation, employee_data.*, project.project_name as project_name FROM employee_data, department,designation as s, designation as t, project where employee_data.department_id = department.department_id AND employee_data.current_designation_id = s.designation_id AND employee_data.previous_designation_id = t.designation_id AND employee_data.project_id = project.project_id ORDER BY date_of_joining LIMIT 1;`
     );
   console.log(
     "information",
@@ -355,7 +358,7 @@ app.patch("/increment/update", async (req, res) => {
   var todayDate = new Date(new Date().setFullYear(new Date().getFullYear()))
     .toISOString()
     .slice(0, 10);
-  var wefDate = new Date(new Date().setFullYear(new Date().getFullYear()+1))
+  var wefDate = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
     .toISOString()
     .slice(0, 10);
   for (let record of data) {
@@ -374,53 +377,51 @@ app.put("/notifications/:id", async (req, res) => {
   res.status(200).json({ message: "Sucess" });
 });
 
-function sendMail(data,message){
-  return new Promise((resolve, reject) =>{
+function sendMail(data, message) {
+  return new Promise((resolve, reject) => {
     console.log("hi");
     var transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        user: 'emsadm2023@gmail.com',
-        pass: 'sbaggvgoqbnozxef'
-      }
+        user: "emsadm2023@gmail.com",
+        pass: "sbaggvgoqbnozxef",
+      },
     });
-    
-    
+
     var mailOptions = {
-      from: 'emsadm2023@gmail.com',
+      from: "emsadm2023@gmail.com",
       to: `${data.email}`,
-      subject: 'Sending Email using Node.js',
+      subject: "Sending Email using Node.js",
       text: `Hello ${data.email}, your wef date is dew soon! \n ${message}`,
-      // html: '<h1>Hi Smartherd</h1><p>Your Messsage</p>'        
+      // html: '<h1>Hi Smartherd</h1><p>Your Messsage</p>'
     };
-    
-    transporter.sendMail(mailOptions, function(error, info){
+
+    transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
         // res.status(400).json({message:"error"});
         reject(error);
       } else {
-        console.log('Email sent: ' + info.response);
+        console.log("Email sent: " + info.response);
         resolve(info.response);
         // req.flash("success","Email has been sent");
-        
       }
     });
-  })
+  });
 }
 
 app.post("/inform", async (req, res) => {
   try {
-  const data = req.body;
-  console.log(data);
-  for( let i=0;i<data.array.length;i++){
-    console.log("hi1");
-    const response = await sendMail(data.array[i],data.message);
+    const data = req.body;
+    console.log(data);
+    for (let i = 0; i < data.array.length; i++) {
+      console.log("hi1");
+      const response = await sendMail(data.array[i], data.message);
+    }
+    res.status(200).json({ message: "Success" });
+  } catch (err) {
+    res.status(400).json({ message: "error" });
   }
-  res.status(200).json({ message: "Success" });
-}catch(err){
-  res.status(400).json({ message: "error" });
-}
 });
 
 app.get("/upload", async (req, res) => {

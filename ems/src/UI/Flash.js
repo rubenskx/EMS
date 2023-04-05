@@ -1,10 +1,8 @@
 import classes from "./Flash.module.css";
 const Flash = (props) => {
-function handleClick(event) {
-  const element = event.target;
-  if (element && element.parentElement) {
-    element.parentElement.style.display = "none";
-  }
+  console.log(props);
+const handleClick = () => {
+    props.handleFlashClick();
 }
 
 
@@ -14,7 +12,7 @@ return (
       className={classes.alert}
       style={{ backgroundColor: props.type === "warn" ? "#f44336" : "#04AA6D" }}
     >
-      <span className={classes.closebtn} onClick={handleClick}>
+      <span className={classes.closebtn} onClick={props.handleFlashClick}>
         &times;
       </span>
       <div className="text-center">{props.children}</div>

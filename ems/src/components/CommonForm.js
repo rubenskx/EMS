@@ -2,7 +2,7 @@ import { Form, useNavigate, useNavigation} from "react-router-dom";
 import Card from "../UI/Card";
 import { useState } from "react";
 import classes from "./SearchForm.module.css";
-
+import ButtonUI from "../UI/ButtonUI";
 
 const CommonForm = (props) => {
   const { formdata } = props;
@@ -374,12 +374,12 @@ const CommonForm = (props) => {
           </select>
         </p>
         <div className={classes.actions}>
-          <button type="button" onClick={cancelHandler} disabled={isSubmitting}>
+          <ButtonUI onClick={cancelHandler} disabled={isSubmitting} color="red">
             Cancel
-          </button>
-          <button type="submit" disabled={isSubmitting}>
+          </ButtonUI>
+          <ButtonUI disabled={isSubmitting} color="green">
             {isSubmitting ? "Submitting..." : "Submit"}
-          </button>
+          </ButtonUI>
         </div>
       </Card>
     </Form>

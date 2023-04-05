@@ -4,14 +4,20 @@ import { useState } from "react";
 import RecentEmployees from "../components/RecentEmployee";
 import ExportExcel from "../utils/ExportExcel";
 import { useNavigate } from "react-router-dom";
-import { IoIosArrowBack } from "react-icons/io";
+import Flash from "../UI/Flash";
+import Spinner from "../UI/Spinner";
+import { IoIosArrowDropleft } from "react-icons/io";
 const SalaryIncrement = (props) => {
   const [errors, setErrors] = useState("");
   const [data, setData] = useState([]);
+  const [message, setMessage] = useState(false);
   const [downloadArray, setDownloadArray] = useState([]);
+  const [spinner , setSpinner] = useState(false);
   const navigate = useNavigate();
+
   const incrementHandler = async () => {
     setData([]);
+    setSpinner(true);
     const date_before = document.getElementById("date_before").value;
     const date_after = document.getElementById("date_after").value;
     const before = new Date(date_before);
@@ -45,9 +51,14 @@ const SalaryIncrement = (props) => {
     const employeeData = await response.json();
     console.log(employeeData);
     setErrors("");
+    setMessage(true);
+    setSpinner(false);
     setData(employeeData.empData);
   };
-
+  const closeFlash = () => {
+    console.log("hello!!");
+    setErrors("");
+  }
   const excelGenerator = () => {
     let filterData = [];
     console.log("array", downloadArray);
@@ -61,7 +72,7 @@ const SalaryIncrement = (props) => {
   };
 
   const backButtonHandler = () => {
-    console.log("hello!");
+    setMessage(false);
     setData([]);
   };
 
@@ -80,12 +91,12 @@ const SalaryIncrement = (props) => {
   const handleUpdate = async () => {
     let filterData = [];
     console.log("array", downloadArray);
-    console.log(data,"data");
-    filterData=data.filter((ele)=>{
-      if(downloadArray.includes(ele.id)){
+    console.log(data, "data");
+    filterData = data.filter((ele) => {
+      if (downloadArray.includes(ele.id)) {
         return ele;
       }
-    })
+    });
 
     const response = await fetch("http://localhost:7000/increment/update", {
       method: "PATCH",
@@ -94,26 +105,32 @@ const SalaryIncrement = (props) => {
       },
       body: JSON.stringify(filterData),
     });
-  
-  if(!response.ok){
-    setErrors("There is an error with the database.")
-    return;
-  }
-  if(response.status === 422){
-    setErrors("Incorrect database format.");
-    return;
-  }
-    navigate("/",{replace: true})
-  };
 
+    if (!response.ok) {
+      setErrors("There is an error with the database.");
+      return;
+    }
+    if (response.status === 422) {
+      setErrors("Incorrect database format.");
+      return;
+    }
+    navigate("/", { replace: true });
+  };
 
   return (
     <>
+      {data.length > 0 && <div className="mx-5 mt-2" style={{ cursor: "pointer" }}>
+        <IoIosArrowDropleft size={40} onClick={() => backButtonHandler()} />
+      </div>}
+      {errors !== "" && (
+        <Flash type="warn" handleFlashClick={closeFlash}>
+          {errors}
+        </Flash>
+      )}
       <div className="container mt-5">
         <Card>
           <div>
             <h3>Enter a range for Salary Incrementation</h3>
-            {errors !== "" && <p style={{ color: "red" }}>{errors}</p>}
             <div className="row mt-5">
               <p className="col-lg-4 text-center">
                 <label htmlFor="date_before">
@@ -126,7 +143,7 @@ const SalaryIncrement = (props) => {
                   placeholder="From."
                 />
               </p>
-              <p className="col-lg-2 text-center">-----</p>
+              <p className="col-lg-2 text-center"> </p>
               <p className="col-lg-4 text-center">
                 <label htmlFor="date_after">
                   <b>To:</b>
@@ -139,10 +156,13 @@ const SalaryIncrement = (props) => {
             </div>
           </div>
         </Card>
+        {message && data.length === 0 && (
+          <p className="text-center mt-5">Your search yielded no results.</p>
+        )}
+        {spinner && <div className="text-center"><Spinner/></div>}
         {data.length > 0 && (
           <div className="mt-5">
             <h2>
-              <IoIosArrowBack size={40} onClick={() => backButtonHandler()} />
               Search Results
             </h2>
             <div style={{ textAlign: "right" }}>

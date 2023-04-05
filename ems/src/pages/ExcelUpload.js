@@ -4,13 +4,15 @@ import { useNavigate } from "react-router-dom";
 import RecentEmployees from "../components/RecentEmployee";
 import ButtonUI from "../UI/ButtonUI";
 import ExportExcel from "../utils/ExportExcel";
-import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowDropleft } from "react-icons/io";
 import Card from "../UI/Card";
+import Spinner from "../UI/Spinner";
 const XLSX = require("xlsx");
 
 const ExcelUpload = (props) => {
   const [exceldata, setData] = useState([]);
-  const [error,setError] = useState("");
+  const [error, setError] = useState("");
+  const [spinner, setSpinner] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     console.log(exceldata);
@@ -23,14 +25,14 @@ const ExcelUpload = (props) => {
     }));
   };
 
-    const backButtonHandler = () => {
-      console.log("hello!");
-      setData([]);
-    };
-    
+  const backButtonHandler = () => {
+    console.log("hello!");
+    setData([]);
+  };
+
   const submitHandler = (event) => {
     const file = event.dataTransfer.files[0];
-
+    setSpinner(true);
     const reader = new FileReader();
     reader.onload = (e) => {
       const data = new Uint8Array(e.target.result);
@@ -40,6 +42,7 @@ const ExcelUpload = (props) => {
       setData(parsedData[0]);
     };
     reader.readAsArrayBuffer(file);
+    setSpinner(false);
   };
 
   const sendDataHandler = async () => {
@@ -58,11 +61,11 @@ const ExcelUpload = (props) => {
       console.log("error");
     }
 
-    if(response.status === 401){
-        const result = await response.json();
-        console.log(result);
-        setError(result.message);
-        return;
+    if (response.status === 401) {
+      const result = await response.json();
+      console.log(result);
+      setError(result.message);
+      return;
     }
     navigate("/");
   };
@@ -79,23 +82,28 @@ const ExcelUpload = (props) => {
     object.qualification = "";
     object.previous_experience = "";
     object.year_of_course_completion = "";
-    object.previous_designation="";
-    object.current_designation="";
-    object.retired="";
-    object.wef="";
-    object.deduction="";
-    object.remarks="";
-    object.head_engineer="";
-    object.director="";
-    object.email="";
-    object.department="";
-    object.project="";
+    object.previous_designation = "";
+    object.current_designation = "";
+    object.retired = "";
+    object.wef = "";
+    object.deduction = "";
+    object.remarks = "";
+    object.head_engineer = "";
+    object.director = "";
+    object.email = "";
+    object.department = "";
+    object.project = "";
     let array = [];
     array.push(object);
     ExportExcel(array);
   };
   return (
     <Fragment>
+      {exceldata.length > 0 && (
+        <div className="mx-5 mt-2" style={{ cursor: "pointer" }}>
+          <IoIosArrowDropleft size={40} onClick={() => backButtonHandler()} />
+        </div>
+      )}
       <div className="container mt-5">
         <Card>
           <h3>Download the template before uploading onto the website.</h3>
@@ -107,12 +115,14 @@ const ExcelUpload = (props) => {
           </div>
         </Card>
         <DragAndDrop onFileDrop={submitHandler} />
+        {spinner && (
+          <div className="text-center">
+            <Spinner />
+          </div>
+        )}
         {exceldata.length > 0 && (
           <div className="mt-5">
-            <h2>
-              <IoIosArrowBack size={40} onClick={() => backButtonHandler()} />
-              {`Found ${exceldata.length} Employees.`}
-            </h2>
+            <h2>{`Found ${exceldata.length} Employees.`}</h2>
             <div style={{ textAlign: "right" }}>
               <ButtonUI onClick={sendDataHandler}>Submit</ButtonUI>
             </div>
