@@ -30,6 +30,7 @@ const RecentEmployees = (props) => {
               <th>Department</th>
               <th>Project</th>
               <th>Current Designation</th>
+              <th>Basic Salary</th>
               {props.addArray && props.addArray.map((ele) => <th>{ele}</th>)}
               {props.checked && <th>Checked?</th>}
             </tr>
@@ -74,6 +75,7 @@ const RecentEmployees = (props) => {
                     ? ele.previous_designation_name
                     : ele.current_designation}
                 </td>
+                <td>{ele.Basic_Salary}</td>
                 {props.addArray &&
                   props.addArray.map((keys) => <td>{ele[keys]}</td>)}
                 {props.checked && (

@@ -18,6 +18,7 @@ const connection = mysql.createConnection({
   password: "",
   database: "ems",
   multipleStatements: "true", //this is required for querying multiple statements in mysql
+  port:8111
 });
 
 connection.connect((err) => {
@@ -106,7 +107,8 @@ app.post("/excel", async (req, res) => {
       ) {
         errorString += `${data[i].id},`;
       } else {
-        const query = `INSERT INTO employee_data (id,name,mobile_no,gender,date_of_joining,qualification,previous_experience,year_of_course_completion,retired,current_salary,wef,deduction,remarks,head_engineer,director,email,department_id,project_id,current_designation_id ,previous_designation_id) VALUES ("${data[i].id}", "${data[i].name}","${data[i].mobile_no}", "${data[i].gender}", "${data[i].date_of_joining}","${data[i].qualification}","${data[i].previous_experience}",${data[i].year_of_course_completion},"${data[i].retired}",${data[i].current_salary},"${data[i].wef}",${data[i].deduction},"${data[i].remarks}","${data[i].head_engineer}","${data[i].director}","${data[i].email}",${deptRes[0].department_id},${projRes[0].project_id},${currDesigRes[0].designation_id}, ${prevDesigRes[0].designation_id}); INSERT INTO salary(salary,wef_date,status,employee_id) VALUES(${data[i].current_salary},"${data[i].wef}","current", "${data[i].id}");`;
+        const basic = Math.round(data[i].current_salary/ 1.86);
+        const query = `INSERT INTO employee_data (id,name,mobile_no,gender,date_of_joining,qualification,previous_experience,year_of_course_completion,retired,current_salary,wef,deduction,remarks,head_engineer,director,email,department_id,project_id,current_designation_id ,previous_designation_id,Basic_Salary) VALUES ("${data[i].id}", "${data[i].name}","${data[i].mobile_no}", "${data[i].gender}", "${data[i].date_of_joining}","${data[i].qualification}","${data[i].previous_experience}",${data[i].year_of_course_completion},"${data[i].retired}",${data[i].current_salary},"${data[i].wef}",${data[i].deduction},"${data[i].remarks}","${data[i].head_engineer}","${data[i].director}","${data[i].email}",${deptRes[0].department_id},${projRes[0].project_id},${currDesigRes[0].designation_id}, ${prevDesigRes[0].designation_id},${basic}); INSERT INTO salary(salary,wef_date,status,employee_id) VALUES(${data[i].current_salary},"${data[i].wef}","current", "${data[i].id}");`;
         console.log(query);
         const result = await queryDatabase(query);
 
@@ -362,7 +364,8 @@ app.patch("/increment/update", async (req, res) => {
     .toISOString()
     .slice(0, 10);
   for (let record of data) {
-    let query = `UPDATE employee_data SET current_salary=${record.increment},wef="${wefDate}" WHERE id="${record.id}"; UPDATE salary set status="old" WHERE employee_id="${record.id}"; INSERT INTO SALARY (wef_date,employee_id,salary,status) VALUES("${todayDate}","${record.id}",${record.increment},"current");`;
+    const basic = Math.round(record.increment/ 1.86);
+    let query = `UPDATE employee_data SET current_salary=${record.increment},wef="${wefDate}",Basic_Salary=${basic} WHERE id="${record.id}"; UPDATE salary set status="old" WHERE employee_id="${record.id}"; INSERT INTO SALARY (wef_date,employee_id,salary,status) VALUES("${todayDate}","${record.id}",${record.increment},"current");`;
     console.log(query);
     const response = await queryDatabase(query);
   }
@@ -453,8 +456,8 @@ app.post("/upload", async (req, res) => {
     if (data.years) {
       experience += `${data.years} years`;
     }
-
-    const query = `INSERT INTO employee_data (id,name,gender,department_id,email,mobile_no,date_of_joining,current_designation_id,previous_designation_id,previous_experience,qualification,year_of_course_completion,retired,wef,current_salary,remarks,head_engineer,director,project_id,deduction) VALUES("${data.id}","${data.title}", "${data.gender}", ${data.department}, "${data.email}", "${data.mobile_no}", "${data.date}",  ${data.currentDesignation}, ${data.previousDesignation}, "${experience}", "${data.qualify}", ${data.year_of_course}, "${retired}", "${data.wef_date}", ${data.salary}, "${remarks}", "${data.head_engineer}", "${data.director}", ${data.project}, ${data.deduction}); INSERT INTO salary (salary,status,wef_date,employee_id) VALUES(${data.salary}, "current", "${data.date}", "${data.id}")`;
+    const basic = Math.round(data.salary/ 1.86);
+    const query = `INSERT INTO employee_data (id,name,gender,department_id,email,mobile_no,date_of_joining,current_designation_id,previous_designation_id,previous_experience,qualification,year_of_course_completion,retired,wef,current_salary,remarks,head_engineer,director,project_id,deduction,Basic_Salary) VALUES("${data.id}","${data.title}", "${data.gender}", ${data.department}, "${data.email}", "${data.mobile_no}", "${data.date}",  ${data.currentDesignation}, ${data.previousDesignation}, "${experience}", "${data.qualify}", ${data.year_of_course}, "${retired}", "${data.wef_date}", ${data.salary}, "${remarks}", "${data.head_engineer}", "${data.director}", ${data.project}, ${data.deduction},${basic}); INSERT INTO salary (salary,status,wef_date,employee_id) VALUES(${data.salary}, "current", "${data.date}", "${data.id}")`;
     const response = await queryDatabase(query);
     res.status(200).json({ message: "Success" });
   } catch (err) {
@@ -530,8 +533,8 @@ app.patch("/show/:id", async (req, res) => {
     if (data.years) {
       experience += `${data.years} years`;
     }
-
-    const query = `UPDATE employee_data SET name = "${data.title}" ,gender ="${data.gender}" ,department_id = ${data.department}, email = "${data.email}" , mobile_no = "${data.mobile_no}", date_of_joining = "${data.date}" , current_designation_id = ${data.currentDesignation} , previous_designation_id = ${data.previousDesignation}, previous_experience = "${experience}" ,qualification = "${data.qualify}" ,year_of_course_completion = ${data.year_of_course}, retired = "${retired}" , wef = "${data.wef_date}" , current_salary = ${data.salary}, remarks = "${remarks}" , head_engineer = "${data.head_engineer}" , director = "${data.director}" ,project_id = ${data.project}, deduction = ${data.deduction} WHERE id="${data.id}"; UPDATE salary set salary=${data.salary}, wef_date="${data.wef_date}" WHERE employee_id="${data.id}";`;
+    const basic = Math.round(data.salary/ 1.86);
+    const query = `UPDATE employee_data SET name = "${data.title}" ,gender ="${data.gender}" ,department_id = ${data.department}, email = "${data.email}" , mobile_no = "${data.mobile_no}", date_of_joining = "${data.date}" , current_designation_id = ${data.currentDesignation} , previous_designation_id = ${data.previousDesignation}, previous_experience = "${experience}" ,qualification = "${data.qualify}" ,year_of_course_completion = ${data.year_of_course}, retired = "${retired}" , wef = "${data.wef_date}" , current_salary = ${data.salary}, remarks = "${remarks}" , head_engineer = "${data.head_engineer}" , director = "${data.director}" ,project_id = ${data.project}, deduction = ${data.deduction},Basic_Salary=${basic} WHERE id="${data.id}"; UPDATE salary set salary=${data.salary}, wef_date="${data.wef_date}" WHERE employee_id="${data.id}";`;
     console.log(query);
     const response = await queryDatabase(query);
     res.status(200).json({ message: "Success" });
