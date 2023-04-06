@@ -158,6 +158,12 @@ const ShowEmployee = (props) => {
                 </label>
                 <div>{emp.project_name}</div>
               </div>
+              <div>
+                <label htmlFor="project" className={classes.bold}>
+                  Basic Salary
+                </label>
+                <div>{emp.Basic_Salary}</div>
+              </div>
             </div>
           </div>
         </Card>

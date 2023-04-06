@@ -18,6 +18,7 @@ const connection = mysql.createConnection({
   password: "",
   database: "ems",
   multipleStatements: "true", //this is required for querying multiple statements in mysql
+  port:8111
 });
 
 connection.connect((err) => {
@@ -106,7 +107,8 @@ app.post("/excel", async (req, res) => {
       ) {
         errorString += `${data[i].id},`;
       } else {
-        const query = `INSERT INTO employee_data (id,name,mobile_no,gender,date_of_joining,qualification,previous_experience,year_of_course_completion,retired,current_salary,wef,deduction,remarks,head_engineer,director,email,department_id,project_id,current_designation_id ,previous_designation_id) VALUES ("${data[i].id}", "${data[i].name}","${data[i].mobile_no}", "${data[i].gender}", "${data[i].date_of_joining}","${data[i].qualification}","${data[i].previous_experience}",${data[i].year_of_course_completion},"${data[i].retired}",${data[i].current_salary},"${data[i].wef}",${data[i].deduction},"${data[i].remarks}","${data[i].head_engineer}","${data[i].director}","${data[i].email}",${deptRes[0].department_id},${projRes[0].project_id},${currDesigRes[0].designation_id}, ${prevDesigRes[0].designation_id}); INSERT INTO salary(salary,wef_date,status,employee_id) VALUES(${data[i].current_salary},"${data[i].wef}","current", "${data[i].id}");`;
+        const basic = Math.round(data[i].current_salary/ 1.86);
+        const query = `INSERT INTO employee_data (id,name,mobile_no,gender,date_of_joining,qualification,previous_experience,year_of_course_completion,retired,current_salary,wef,deduction,remarks,head_engineer,director,email,department_id,project_id,current_designation_id ,previous_designation_id,Basic_Salary) VALUES ("${data[i].id}", "${data[i].name}","${data[i].mobile_no}", "${data[i].gender}", "${data[i].date_of_joining}","${data[i].qualification}","${data[i].previous_experience}",${data[i].year_of_course_completion},"${data[i].retired}",${data[i].current_salary},"${data[i].wef}",${data[i].deduction},"${data[i].remarks}","${data[i].head_engineer}","${data[i].director}","${data[i].email}",${deptRes[0].department_id},${projRes[0].project_id},${currDesigRes[0].designation_id}, ${prevDesigRes[0].designation_id},${basic}); INSERT INTO salary(salary,wef_date,status,employee_id) VALUES(${data[i].current_salary},"${data[i].wef}","current", "${data[i].id}");`;
         console.log(query);
         const result = await queryDatabase(query);
 
@@ -248,7 +250,7 @@ app.get("/home", async (req, res) => {
     totalEmployees,
     RetiredEmployees,
     avgSalary,
-    newEmployees
+    newEmployees,
   );
   let results = {};
   results.total = totalEmployees;
@@ -278,6 +280,8 @@ app.get("/notifications", async (req, res) => {
 app.get("/increment", async (req, res) => {
   const { before, after } = req.query;
   const { id } = req.params;
+  const [{HRA,DA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
+  const divider=(100+HRA+DA)/100;
   const empData =
     await queryDatabase(`SELECT *,employee_data.name AS emp_name,department.name AS dept_name,previous_designation.designation_name AS previous_designation_name, current_designation.designation_name AS current_designation_name
   FROM employee_data
@@ -288,63 +292,63 @@ app.get("/increment", async (req, res) => {
   WHERE  wef BETWEEN '${before}' AND '${after}';`);
   console.log(empData);
   empData.forEach((element) => {
-    const basic = Math.round(element.current_salary / 1.86);
+    const basic = Math.round(element.current_salary / divider);
     if (7650 < basic < 8900) {
-      element.increment = Math.round((basic + 250) * 1.86);
+      element.increment = Math.round((basic + 250) * divider);
     }
     if (8900 < basic < 10350) {
-      element.increment = Math.round((basic + 290) * 1.86);
+      element.increment = Math.round((basic + 290) * divider);
     }
     if (10350 < basic < 12000) {
-      element.increment = Math.round((basic + 330) * 1.86);
+      element.increment = Math.round((basic + 330) * divider);
     }
     if (12000 < basic < 13850) {
-      element.increment = Math.round((basic + 370) * 1.86);
+      element.increment = Math.round((basic + 370) * divider);
     }
     if (13850 < basic < 15950) {
-      element.increment = Math.round((basic + 420) * 1.86);
+      element.increment = Math.round((basic + 420) * divider);
     }
     if (15950 < basic < 18300) {
-      element.increment = Math.round((basic + 470) * 1.86);
+      element.increment = Math.round((basic + 470) * divider);
     }
     if (18300 < basic < 20950) {
-      element.increment = Math.round((basic + 530) * 1.86);
+      element.increment = Math.round((basic + 530) * divider);
     }
     if (20950 < basic < 23900) {
-      element.increment = Math.round((basic + 590) * 1.86);
+      element.increment = Math.round((basic + 590) * divider);
     }
     if (23900 < basic < 27250) {
-      element.increment = Math.round((basic + 670) * 1.86);
+      element.increment = Math.round((basic + 670) * divider);
     }
     if (27250 < basic < 31000) {
-      element.increment = Math.round((basic + 750) * 1.86);
+      element.increment = Math.round((basic + 750) * divider);
     }
     if (31000 < basic < 35150) {
-      element.increment = Math.round((basic + 830) * 1.86);
+      element.increment = Math.round((basic + 830) * divider);
     }
     if (35150 < basic < 39700) {
-      element.increment = Math.round((basic + 910) * 1.86);
+      element.increment = Math.round((basic + 910) * divider);
     }
     if (39700 < basic < 44650) {
-      element.increment = Math.round((basic + 990) * 1.86);
+      element.increment = Math.round((basic + 990) * divider);
     }
     if (44650 < basic < 50100) {
-      element.increment = Math.round((basic + 1090) * 1.86);
+      element.increment = Math.round((basic + 1090) * divider);
     }
     if (50100 < basic < 56050) {
-      element.increment = Math.round((basic + 1190) * 1.86);
+      element.increment = Math.round((basic + 1190) * divider);
     }
     if (56050 < basic < 65080) {
-      element.increment = Math.round((basic + 1290) * 1.86);
+      element.increment = Math.round((basic + 1290) * divider);
     }
     if (65080 < basic < 74810) {
-      element.increment = Math.round((basic + 1390) * 1.86);
+      element.increment = Math.round((basic + 1390) * divider);
     }
     if (74810 < basic < 85380) {
-      element.increment = Math.round((basic + 1510) * 1.86);
+      element.increment = Math.round((basic + 1510) * divider);
     }
     if (85380 < basic < 91900) {
-      element.increment = Math.round((basic + 1630) * 1.86);
+      element.increment = Math.round((basic + 1630) * divider);
     }
   });
   const data = { empData: empData };
@@ -355,6 +359,8 @@ app.get("/increment", async (req, res) => {
 app.patch("/increment/update", async (req, res) => {
   const data = req.body;
   console.log(data);
+  const [{HRA,DA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
+  const divider=(100+HRA+DA)/100;
   var todayDate = new Date(new Date().setFullYear(new Date().getFullYear()))
     .toISOString()
     .slice(0, 10);
@@ -362,7 +368,8 @@ app.patch("/increment/update", async (req, res) => {
     .toISOString()
     .slice(0, 10);
   for (let record of data) {
-    let query = `UPDATE employee_data SET current_salary=${record.increment},wef="${wefDate}" WHERE id="${record.id}"; UPDATE salary set status="old" WHERE employee_id="${record.id}"; INSERT INTO SALARY (wef_date,employee_id,salary,status) VALUES("${todayDate}","${record.id}",${record.increment},"current");`;
+    const basic = Math.round(record.increment/ divider);
+    let query = `UPDATE employee_data SET current_salary=${record.increment},wef="${wefDate}",Basic_Salary=${basic} WHERE id="${record.id}"; UPDATE salary set status="old" WHERE employee_id="${record.id}"; INSERT INTO SALARY (wef_date,employee_id,salary,status) VALUES("${todayDate}","${record.id}",${record.increment},"current");`;
     console.log(query);
     const response = await queryDatabase(query);
   }
@@ -453,8 +460,10 @@ app.post("/upload", async (req, res) => {
     if (data.years) {
       experience += `${data.years} years`;
     }
-
-    const query = `INSERT INTO employee_data (id,name,gender,department_id,email,mobile_no,date_of_joining,current_designation_id,previous_designation_id,previous_experience,qualification,year_of_course_completion,retired,wef,current_salary,remarks,head_engineer,director,project_id,deduction) VALUES("${data.id}","${data.title}", "${data.gender}", ${data.department}, "${data.email}", "${data.mobile_no}", "${data.date}",  ${data.currentDesignation}, ${data.previousDesignation}, "${experience}", "${data.qualify}", ${data.year_of_course}, "${retired}", "${data.wef_date}", ${data.salary}, "${remarks}", "${data.head_engineer}", "${data.director}", ${data.project}, ${data.deduction}); INSERT INTO salary (salary,status,wef_date,employee_id) VALUES(${data.salary}, "current", "${data.date}", "${data.id}")`;
+    const [{HRA,DA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
+    const divider=(100+HRA+DA)/100;
+    const basic = Math.round(data.salary/ divider);
+    const query = `INSERT INTO employee_data (id,name,gender,department_id,email,mobile_no,date_of_joining,current_designation_id,previous_designation_id,previous_experience,qualification,year_of_course_completion,retired,wef,current_salary,remarks,head_engineer,director,project_id,deduction,Basic_Salary) VALUES("${data.id}","${data.title}", "${data.gender}", ${data.department}, "${data.email}", "${data.mobile_no}", "${data.date}",  ${data.currentDesignation}, ${data.previousDesignation}, "${experience}", "${data.qualify}", ${data.year_of_course}, "${retired}", "${data.wef_date}", ${data.salary}, "${remarks}", "${data.head_engineer}", "${data.director}", ${data.project}, ${data.deduction},${basic}); INSERT INTO salary (salary,status,wef_date,employee_id) VALUES(${data.salary}, "current", "${data.date}", "${data.id}")`;
     const response = await queryDatabase(query);
     res.status(200).json({ message: "Success" });
   } catch (err) {
@@ -486,6 +495,46 @@ app.post("/add/project", async (req, res) => {
   console.log("data", data);
   const response = await queryDatabase(
     `INSERT INTO project (project_name) VALUES ("${data.name}");`
+  );
+  res.status(200).json({ message: "Success" });
+});
+
+app.post("/add/hra", async (req, res) => {
+  const data = req.body;
+  console.log("data", data);
+  const [{oldHRA,DA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
+  const newHRA=parseInt(data.name);
+  const olddivider=(100+oldHRA+DA)/100;
+  const newdivider=(100+newHRA+DA)/100;
+  const empData=await queryDatabase(`SELECT id,Basic_Salary FROM employee_data`);
+  empData.forEach(async (record)=>{
+    const basic=record.Basic_Salary;
+    const newSalary=basic*newdivider;
+    await queryDatabase(`UPDATE employee_data SET current_salary=${newSalary} WHERE id="${record.id}"`)
+    await queryDatabase(`UPDATE salary SET salary=${newSalary} WHERE employee_id="${record.id}" AND status="current"`)
+  })
+  const response = await queryDatabase(
+    `UPDATE admin_details SET HRA=${newHRA} WHERE admin_id=1;`
+  );
+  res.status(200).json({ message: "Success" });
+});
+
+app.post("/add/da", async (req, res) => {
+  const data = req.body;
+  console.log("data", data);
+  const [{HRA,oldDA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
+  const newDA=parseInt(data.name);
+  const olddivider=(100+HRA+oldDA)/100;
+  const newdivider=(100+HRA+newDA)/100;
+  const empData=await queryDatabase(`SELECT id,Basic_Salary FROM employee_data`);
+  empData.forEach(async (record)=>{
+    const basic=record.Basic_Salary;
+    const newSalary=basic*newdivider;
+    await queryDatabase(`UPDATE employee_data SET current_salary=${newSalary} WHERE id="${record.id}"`)
+    await queryDatabase(`UPDATE salary SET salary=${newSalary} WHERE employee_id="${record.id}" AND status="current"`)
+  })
+  const response = await queryDatabase(
+    `UPDATE admin_details SET DA=${parseInt(data.name)} WHERE admin_id=1;`
   );
   res.status(200).json({ message: "Success" });
 });
@@ -530,8 +579,10 @@ app.patch("/show/:id", async (req, res) => {
     if (data.years) {
       experience += `${data.years} years`;
     }
-
-    const query = `UPDATE employee_data SET name = "${data.title}" ,gender ="${data.gender}" ,department_id = ${data.department}, email = "${data.email}" , mobile_no = "${data.mobile_no}", date_of_joining = "${data.date}" , current_designation_id = ${data.currentDesignation} , previous_designation_id = ${data.previousDesignation}, previous_experience = "${experience}" ,qualification = "${data.qualify}" ,year_of_course_completion = ${data.year_of_course}, retired = "${retired}" , wef = "${data.wef_date}" , current_salary = ${data.salary}, remarks = "${remarks}" , head_engineer = "${data.head_engineer}" , director = "${data.director}" ,project_id = ${data.project}, deduction = ${data.deduction} WHERE id="${data.id}"; UPDATE salary set salary=${data.salary}, wef_date="${data.wef_date}" WHERE employee_id="${data.id}";`;
+    const [{HRA,DA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
+    const divider=(100+HRA+DA)/100; 
+    const basic = Math.round(data.salary/ divider);
+    const query = `UPDATE employee_data SET name = "${data.title}" ,gender ="${data.gender}" ,department_id = ${data.department}, email = "${data.email}" , mobile_no = "${data.mobile_no}", date_of_joining = "${data.date}" , current_designation_id = ${data.currentDesignation} , previous_designation_id = ${data.previousDesignation}, previous_experience = "${experience}" ,qualification = "${data.qualify}" ,year_of_course_completion = ${data.year_of_course}, retired = "${retired}" , wef = "${data.wef_date}" , current_salary = ${data.salary}, remarks = "${remarks}" , head_engineer = "${data.head_engineer}" , director = "${data.director}" ,project_id = ${data.project}, deduction = ${data.deduction},Basic_Salary=${basic} WHERE id="${data.id}"; UPDATE salary set salary=${data.salary}, wef_date="${data.wef_date}" WHERE employee_id="${data.id}";`;
     console.log(query);
     const response = await queryDatabase(query);
     res.status(200).json({ message: "Success" });

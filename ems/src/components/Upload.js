@@ -15,9 +15,9 @@ import CommonForm from "./CommonForm";
 const Upload = (props) => {
   const { formdata } = props;
   console.log("formData", formdata);
-  const [text, setText] = useState([true, true, true]);
+  const [text, setText] = useState([true, true, true,true,true]);
   const [flashMessage, setFlashMessage] = useState("");
-  const [sendData, setSendData] = useState(["", "", ""]);
+  const [sendData, setSendData] = useState(["", "", "", "", ""]);
 
   const data = useActionData();
 
@@ -90,6 +90,42 @@ const Upload = (props) => {
       setFlashMessage("The project was successfully added.");
       invertArray(type);
     }
+    if (type === 3) {
+      console.log("project", sendData[3]);
+      url = url + "add/hra";
+      object.name = sendData[3];
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(object),
+      });
+
+      if (!response.ok) {
+        console.log("error");
+      }
+      setFlashMessage("The HRA was succesfully applied");
+      invertArray(type);
+    }
+    if (type === 4) {
+      console.log("project", sendData[4]);
+      url = url + "add/da";
+      object.name = sendData[4];
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(object),
+      });
+
+      if (!response.ok) {
+        console.log("error");
+      }
+      setFlashMessage("The DA was succesfully applied");
+      invertArray(type);
+    }
   };
 
   return (
@@ -152,6 +188,44 @@ const Upload = (props) => {
           </div>
           {!text[2] && (
             <TextArea onTextChange={handleTextAreaChange} type={2} />
+          )}
+        </Card>
+        <Card>
+          <div className="mb-4">
+            <span className={classes.left}>Edit HRA Percentage</span>
+            <span className={classes.right}>
+              {!text[3] && (
+                <AiOutlineSend size={30} onClick={() => submitFields(3)} />
+              )}
+              {text[3] && (
+                <AiOutlinePlus size={30} onClick={() => invertArray(3)} />
+              )}
+              {!text[3] && (
+                <AiOutlineMinus size={30} onClick={() => invertArray(3)} />
+              )}
+            </span>
+          </div>
+          {!text[3] && (
+            <TextArea onTextChange={handleTextAreaChange} type={3} />
+          )}
+        </Card>
+        <Card>
+          <div className="mb-4">
+            <span className={classes.left}>Edit DA Percentage</span>
+            <span className={classes.right}>
+              {!text[4] && (
+                <AiOutlineSend size={30} onClick={() => submitFields(4)} />
+              )}
+              {text[4] && (
+                <AiOutlinePlus size={30} onClick={() => invertArray(4)} />
+              )}
+              {!text[4] && (
+                <AiOutlineMinus size={30} onClick={() => invertArray(4)} />
+              )}
+            </span>
+          </div>
+          {!text[4] && (
+            <TextArea onTextChange={handleTextAreaChange} type={4} />
           )}
         </Card>
       </CommonForm>
