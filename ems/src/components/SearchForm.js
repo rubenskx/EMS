@@ -12,7 +12,7 @@ import ButtonUI from "../UI/ButtonUI";
 import Select from "react-select";
 import options from "../utils/fieldOptions";
 import ExportExcel from "../utils/ExportExcel";
-import { IoIosArrowBack  } from "react-icons/io";
+import { TbArrowBackUp } from "react-icons/tb";
 
 function SearchForm({ method, event, formdata }) {
   const navigation = useNavigation();
@@ -59,7 +59,7 @@ function SearchForm({ method, event, formdata }) {
       {data && data.result && data.result.data.length && (
         <>
           <div className="mt-3 mx-4">
-            <IoIosArrowBack size={40} onClick={() => backButtonHandler()} />
+            <TbArrowBackUp size={40} onClick={() => backButtonHandler()} />
           </div>
           <div className="container mt-3">
             <div>
@@ -373,7 +373,8 @@ function SearchForm({ method, event, formdata }) {
               </select>
             </p>
             <div className={classes.actions}>
-              <ButtonUI type="button"
+              <ButtonUI
+                type="button"
                 onClick={cancelHandler}
                 disabled={isSubmitting}
                 color="red"

@@ -12,7 +12,7 @@ const RecentEmployees = (props) => {
             <tr className={classes.row + " " + classes.header}>
               <th>ID</th>
               <th>Name</th>
-              <th>Mobile_No</th>
+              <th>Mobile No</th>
               <th>Gender</th>
               <th>Date of Joining</th>
               <th>Qualification</th>

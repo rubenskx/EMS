@@ -6,7 +6,7 @@ import ExportExcel from "../utils/ExportExcel";
 import { useNavigate } from "react-router-dom";
 import Flash from "../UI/Flash";
 import Spinner from "../UI/Spinner";
-import { IoIosArrowDropleft } from "react-icons/io";
+import { TbArrowBackUp } from "react-icons/tb";
 const SalaryIncrement = (props) => {
   const [errors, setErrors] = useState("");
   const [data, setData] = useState([]);
@@ -119,9 +119,11 @@ const SalaryIncrement = (props) => {
 
   return (
     <>
-      {data.length > 0 && <div className="mx-5 mt-2" style={{ cursor: "pointer" }}>
-        <IoIosArrowDropleft size={40} onClick={() => backButtonHandler()} />
-      </div>}
+      {data.length > 0 && (
+        <div className="mx-5 mt-2" style={{ cursor: "pointer" }}>
+          <TbArrowBackUp size={40} onClick={() => backButtonHandler()} />
+        </div>
+      )}
       {errors !== "" && (
         <Flash type="warn" handleFlashClick={closeFlash}>
           {errors}
@@ -159,12 +161,14 @@ const SalaryIncrement = (props) => {
         {message && data.length === 0 && (
           <p className="text-center mt-5">Your search yielded no results.</p>
         )}
-        {spinner && <div className="text-center"><Spinner/></div>}
+        {spinner && (
+          <div className="text-center">
+            <Spinner />
+          </div>
+        )}
         {data.length > 0 && (
           <div className="mt-5">
-            <h2>
-              Search Results
-            </h2>
+            <h2>Search Results</h2>
             <div style={{ textAlign: "right" }}>
               <ButtonUI onClick={excelGenerator} color="green">
                 Export as Excel

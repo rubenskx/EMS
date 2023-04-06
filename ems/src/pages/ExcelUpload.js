@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import RecentEmployees from "../components/RecentEmployee";
 import ButtonUI from "../UI/ButtonUI";
 import ExportExcel from "../utils/ExportExcel";
-import { IoIosArrowDropleft } from "react-icons/io";
+import { TbArrowBackUp } from "react-icons/tb";
 import Card from "../UI/Card";
 import Spinner from "../UI/Spinner";
 const XLSX = require("xlsx");
@@ -101,7 +101,7 @@ const ExcelUpload = (props) => {
     <Fragment>
       {exceldata.length > 0 && (
         <div className="mx-5 mt-2" style={{ cursor: "pointer" }}>
-          <IoIosArrowDropleft size={40} onClick={() => backButtonHandler()} />
+          <TbArrowBackUp size={40} onClick={() => backButtonHandler()} />
         </div>
       )}
       <div className="container mt-5">
