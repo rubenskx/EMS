@@ -1,12 +1,13 @@
 import Card from "../UI/Card";
-import { AiOutlineHome } from "react-icons/ai";
+import { TbMathSymbols } from "react-icons/tb";
 const RetiredEmployees = (props) => {
+  console.log(props, "retired");
   return (
     <>
       <Card>
-        <p>The Total Number of Retired Employees </p>
+        <p>The HRA and DA percentage currently </p>
         <h1>
-          <AiOutlineHome /> {props.retired}
+          <TbMathSymbols /> {props.retired.HRA}% & {props.retired.DA}%
         </h1>
       </Card>
     </>

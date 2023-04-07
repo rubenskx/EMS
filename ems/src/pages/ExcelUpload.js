@@ -7,6 +7,7 @@ import ExportExcel from "../utils/ExportExcel";
 import { TbArrowBackUp } from "react-icons/tb";
 import Card from "../UI/Card";
 import Spinner from "../UI/Spinner";
+import Flash from "../UI/Flash";
 const XLSX = require("xlsx");
 
 const ExcelUpload = (props) => {
@@ -44,7 +45,10 @@ const ExcelUpload = (props) => {
     reader.readAsArrayBuffer(file);
     setSpinner(false);
   };
-
+  const closeFlash = () => {
+    setError("");
+    return;
+  }
   const sendDataHandler = async () => {
     console.log("hello");
     console.log(exceldata);
@@ -99,6 +103,7 @@ const ExcelUpload = (props) => {
   };
   return (
     <Fragment>
+      {error!== "" && <Flash type="warn" handleFlashClick={closeFlash}>{error}</Flash>}
       {exceldata.length > 0 && (
         <div className="mx-5 mt-2" style={{ cursor: "pointer" }}>
           <TbArrowBackUp size={40} onClick={() => backButtonHandler()} />
@@ -107,7 +112,6 @@ const ExcelUpload = (props) => {
       <div className="container mt-5">
         <Card>
           <h3>Download the template before uploading onto the website.</h3>
-          {error !== "" && <p style={{ color: "red" }}>{error}</p>}
           <div style={{ textAlign: "right" }}>
             <ButtonUI color="green" onClick={() => templateLoader()}>
               Download

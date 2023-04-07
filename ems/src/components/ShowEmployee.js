@@ -43,12 +43,19 @@ const ShowEmployee = (props) => {
               <p>{emp.current_designation_name}</p>
             </div>
             <div style={{ textAlign: "right" }} className="col-lg-1">
-              <AiOutlineEdit size={30} onClick={() => editPageGenerator(emp.id)} />
-              <MdDeleteOutline style={{ marginLeft: "10px"}} size={30} onClick={() => deleteEmployeeGenerator(emp.id)}/>
+              <AiOutlineEdit
+                size={30}
+                onClick={() => editPageGenerator(emp.id)}
+              />
+              <MdDeleteOutline
+                style={{ marginLeft: "10px" }}
+                size={30}
+                onClick={() => deleteEmployeeGenerator(emp.id)}
+              />
             </div>
           </div>
           <div className="row container">
-            <div className="col-lg-4">
+            <div className="col-lg-3">
               <div>
                 <label htmlFor="name" className={classes.bold + " mt-3"}>
                   Name
@@ -89,7 +96,7 @@ const ShowEmployee = (props) => {
                 <div>{emp.head_engineer ? emp.head_engineer : "NIL "}</div>
               </div>
             </div>
-            <div className="col-lg-4">
+            <div className="col-lg-3">
               <div>
                 <label htmlFor="gender" className={classes.bold + " mt-3"}>
                   Gender
@@ -127,18 +134,18 @@ const ShowEmployee = (props) => {
                 <div>{emp.director ? emp.director : "NIL"}</div>
               </div>
             </div>
-            <div className="col-lg-4" style={{ paddingLeft: "50px" }}>
+            <div className="col-lg-3" style={{ paddingLeft: "50px" }}>
               <div>
                 <label htmlFor="da" className={classes.bold + " mt-3"}>
-                  DA 76%
+                  DA %
                 </label>
-                <div>Rs. {Math.round((emp.current_salary/1.86)*0.76)}</div>
+                <div>Rs. {Math.round((emp.current_salary / 1.86) * 0.76)}</div>
               </div>
               <div>
                 <label htmlFor="hra" className={classes.bold + " mt-3"}>
-                  HRA 10%
+                  HRA %
                 </label>
-                <div>Rs.{Math.round((emp.current_salary/1.86)*0.1)}</div>
+                <div>Rs.{Math.round((emp.current_salary / 1.86) * 0.1)}</div>
               </div>
               <div>
                 <label htmlFor="salary" className={classes.bold + " mt-3"}>
@@ -153,16 +160,28 @@ const ShowEmployee = (props) => {
                 <div>{emp.deduction}</div>
               </div>
               <div>
-                <label htmlFor="project" className={classes.bold}>
+                <label htmlFor="project" className={classes.bold + " mt-3"}>
                   Project
                 </label>
                 <div>{emp.project_name}</div>
               </div>
               <div>
-                <label htmlFor="project" className={classes.bold}>
+                <label htmlFor="project" className={classes.bold + " mt-3"}>
                   Basic Salary
                 </label>
                 <div>{emp.Basic_Salary}</div>
+              </div>
+            </div>
+            <div className="col-lg-3" style={{ paddingLeft: "50px" }}>
+              <div>
+                <label htmlFor="last_informed" className={classes.bold + " mt-3"}>
+                  Last Informed
+                </label>
+                <div>
+                  {emp.last_informed
+                    ? emp.last_informed.substring(0, 10)
+                    : "NULL"}
+                </div>
               </div>
             </div>
           </div>
@@ -187,7 +206,7 @@ const ShowEmployee = (props) => {
               <h2>Salary History</h2>
               <p>Brief analysis of employee salary.</p>
             </div>
-            <LineChart salaryDetails={salaryDetails}/>
+            <LineChart salaryDetails={salaryDetails} />
           </Card>
         </div>
       )}

@@ -25,11 +25,13 @@ const SalaryIncrement = (props) => {
 
     if (date_before === "" || date_after === "") {
       console.log("error");
+      setSpinner(false);
       setErrors("Please enter a valid date.");
       return;
     }
     if (before > after) {
       console.log("error");
+      setSpinner(false);
       setErrors("Incorrect range provided.");
       return;
     }
@@ -42,6 +44,7 @@ const SalaryIncrement = (props) => {
         })
     );
     if (!response.ok) {
+      setSpinner(false);
       setErrors(
         "There is something wrong with database right now. Please try again."
       );
@@ -64,7 +67,11 @@ const SalaryIncrement = (props) => {
     console.log("array", downloadArray);
     console.log(data);
     for (let ele of downloadArray) {
-      filterData.push(data[ele - 1]);
+      for(let i =0; i < data.length; i++){
+        if(data[i].id === ele){
+           filterData.push(data[i]);
+        }
+      }
     }
 
     console.log("filtered", filterData);

@@ -18,7 +18,6 @@ const connection = mysql.createConnection({
   password: "",
   database: "ems",
   multipleStatements: "true", //this is required for querying multiple statements in mysql
-  port:8111
 });
 
 connection.connect((err) => {
@@ -107,7 +106,7 @@ app.post("/excel", async (req, res) => {
       ) {
         errorString += `${data[i].id},`;
       } else {
-        const basic = Math.round(data[i].current_salary/ 1.86);
+        const basic = Math.round(data[i].current_salary / 1.86);
         const query = `INSERT INTO employee_data (id,name,mobile_no,gender,date_of_joining,qualification,previous_experience,year_of_course_completion,retired,current_salary,wef,deduction,remarks,head_engineer,director,email,department_id,project_id,current_designation_id ,previous_designation_id,Basic_Salary) VALUES ("${data[i].id}", "${data[i].name}","${data[i].mobile_no}", "${data[i].gender}", "${data[i].date_of_joining}","${data[i].qualification}","${data[i].previous_experience}",${data[i].year_of_course_completion},"${data[i].retired}",${data[i].current_salary},"${data[i].wef}",${data[i].deduction},"${data[i].remarks}","${data[i].head_engineer}","${data[i].director}","${data[i].email}",${deptRes[0].department_id},${projRes[0].project_id},${currDesigRes[0].designation_id}, ${prevDesigRes[0].designation_id},${basic}); INSERT INTO salary(salary,wef_date,status,employee_id) VALUES(${data[i].current_salary},"${data[i].wef}","current", "${data[i].id}");`;
         console.log(query);
         const result = await queryDatabase(query);
@@ -241,20 +240,20 @@ app.post("/search-form", async (req, res) => {
 
 app.get("/home", async (req, res) => {
   console.log("home");
-  const [totalEmployees, RetiredEmployees, avgSalary, newEmployees] =
+  const [totalEmployees, HRAdetails, avgSalary, newEmployees] =
     await queryDatabase(
-      `SELECT COUNT(*) as count FROM employee_data; SELECT COUNT(*) as count FROM employee_data WHERE retired="Yes"; SELECT AVG(current_salary) as count FROM employee_data; SELECT department.name as name, employee_data.name as emp_name, t.designation_name as previous_designation, s.designation_name as current_designation, employee_data.*, project.project_name as project_name FROM employee_data, department,designation as s, designation as t, project where employee_data.department_id = department.department_id AND employee_data.current_designation_id = s.designation_id AND employee_data.previous_designation_id = t.designation_id AND employee_data.project_id = project.project_id ORDER BY date_of_joining LIMIT 1;`
+      `SELECT COUNT(*) as count FROM employee_data; SELECT * FROM admin_details where admin_id=1; SELECT AVG(current_salary) as count FROM employee_data; SELECT department.name as name, employee_data.name as emp_name, t.designation_name as previous_designation, s.designation_name as current_designation, employee_data.*, project.project_name as project_name FROM employee_data, department,designation as s, designation as t, project where employee_data.department_id = department.department_id AND employee_data.current_designation_id = s.designation_id AND employee_data.previous_designation_id = t.designation_id AND employee_data.project_id = project.project_id ORDER BY date_of_joining LIMIT 1;`
     );
   console.log(
     "information",
     totalEmployees,
-    RetiredEmployees,
+    HRAdetails,
     avgSalary,
-    newEmployees,
+    newEmployees
   );
   let results = {};
   results.total = totalEmployees;
-  results.retired = RetiredEmployees;
+  results.hra = HRAdetails;
   results.avg_salary = avgSalary;
   results.new_emp = newEmployees;
   console.log(results);
@@ -263,6 +262,12 @@ app.get("/home", async (req, res) => {
 
 app.get("/notifications", async (req, res) => {
   const notifications = await queryDatabase("SELECT * from notifications;");
+  const todayDate = new Date().toISOString().slice(0, 10);
+  "SELECT department.name as name, employee_data.name as emp_name, t.designation_name as previous_designation, s.designation_name as current_designation, employee_data.*, project.project_name as project_name FROM employee_data, department,designation as s, designation as t, project where employee_data.department_id = department.department_id AND employee_data.current_designation_id = s.designation_id AND employee_data.previous_designation_id = t.designation_id AND employee_data.project_id = project.project_id and ";
+  const recentlyInformed = await queryDatabase(
+    `SELECT department.name as name, employee_data.name as emp_name, t.designation_name as previous_designation, s.designation_name as current_designation, employee_data.*, project.project_name as project_name FROM employee_data, department,designation as s, designation as t, project where employee_data.department_id = department.department_id AND employee_data.current_designation_id = s.designation_id AND employee_data.previous_designation_id = t.designation_id AND employee_data.project_id = project.project_id and last_informed BETWEEN "2023-04-07" AND DATE_ADD("2023-04-07", INTERVAL 30 DAY)`
+  );
+  
   let array = [];
   for (let notification of notifications) {
     console.log(notification.query);
@@ -274,14 +279,16 @@ app.get("/notifications", async (req, res) => {
     });
   }
   console.log(array);
-  res.status(200).json({ message: "Success", array });
+  res.status(200).json({ recentlyInformed , message: "Success", array });
 });
 
 app.get("/increment", async (req, res) => {
   const { before, after } = req.query;
   const { id } = req.params;
-  const [{HRA,DA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
-  const divider=(100+HRA+DA)/100;
+  const [{ HRA, DA }] = await queryDatabase(
+    `SELECT HRA,DA FROM admin_details WHERE admin_id=1`
+  );
+  const divider = (100 + HRA + DA) / 100;
   const empData =
     await queryDatabase(`SELECT *,employee_data.name AS emp_name,department.name AS dept_name,previous_designation.designation_name AS previous_designation_name, current_designation.designation_name AS current_designation_name
   FROM employee_data
@@ -359,8 +366,10 @@ app.get("/increment", async (req, res) => {
 app.patch("/increment/update", async (req, res) => {
   const data = req.body;
   console.log(data);
-  const [{HRA,DA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
-  const divider=(100+HRA+DA)/100;
+  const [{ HRA, DA }] = await queryDatabase(
+    `SELECT HRA,DA FROM admin_details WHERE admin_id=1`
+  );
+  const divider = (100 + HRA + DA) / 100;
   var todayDate = new Date(new Date().setFullYear(new Date().getFullYear()))
     .toISOString()
     .slice(0, 10);
@@ -368,8 +377,8 @@ app.patch("/increment/update", async (req, res) => {
     .toISOString()
     .slice(0, 10);
   for (let record of data) {
-    const basic = Math.round(record.increment/ divider);
-    let query = `UPDATE employee_data SET current_salary=${record.increment},wef="${wefDate}",Basic_Salary=${basic} WHERE id="${record.id}"; UPDATE salary set status="old" WHERE employee_id="${record.id}"; INSERT INTO SALARY (wef_date,employee_id,salary,status) VALUES("${todayDate}","${record.id}",${record.increment},"current");`;
+    const basic = Math.round(record.increment / divider);
+    let query = `UPDATE employee_data SET current_salary=${record.increment},wef="${wefDate}",Basic_Salary=${basic} WHERE id="${record.id}"; UPDATE salary set status="old" WHERE employee_id="${record.id}"; INSERT INTO SALARY (wef_date,employee_id,salary,status) VALUES("${wefDate}","${record.id}",${record.increment},"current");`;
     console.log(query);
     const response = await queryDatabase(query);
   }
@@ -385,8 +394,29 @@ app.put("/notifications/:id", async (req, res) => {
 });
 
 function sendMail(data, message) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
+    const month = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const d = new Date();
+    let monthName = month[d.getMonth()];
+    let todayDate = new Date(new Date().setFullYear(new Date().getFullYear()))
+      .toISOString()
+      .slice(0, 10);
     console.log("hi");
+    const response = await queryDatabase(`UPDATE employee_data SET last_informed="${todayDate}" WHERE id="${data.id}"`);
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -399,8 +429,7 @@ function sendMail(data, message) {
       from: "emsadm2023@gmail.com",
       to: `${data.email}`,
       subject: "Sending Email using Node.js",
-      text: `Hello ${data.email}, your wef date is dew soon! \n ${message}`,
-      // html: '<h1>Hi Smartherd</h1><p>Your Messsage</p>'
+      text: `Dear ${data.email},\nWe hope this email finds you well. We would like to inform you that your salary for the month of ${monthName} is due to be credited soon. Please ensure that all necessary documentation, if any, has been submitted to the HR department. Kindly note that any delays in submission may result in a delay in salary disbursement.\n\n${message} \n\nIf you have any questions or concerns regarding your salary or any other matter, please do not hesitate to contact the HR department.\n\nThank you,\n\nHR Department\nEMS`,
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
@@ -460,9 +489,11 @@ app.post("/upload", async (req, res) => {
     if (data.years) {
       experience += `${data.years} years`;
     }
-    const [{HRA,DA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
-    const divider=(100+HRA+DA)/100;
-    const basic = Math.round(data.salary/ divider);
+    const [{ HRA, DA }] = await queryDatabase(
+      `SELECT HRA,DA FROM admin_details WHERE admin_id=1`
+    );
+    const divider = (100 + HRA + DA) / 100;
+    const basic = Math.round(data.salary / divider);
     const query = `INSERT INTO employee_data (id,name,gender,department_id,email,mobile_no,date_of_joining,current_designation_id,previous_designation_id,previous_experience,qualification,year_of_course_completion,retired,wef,current_salary,remarks,head_engineer,director,project_id,deduction,Basic_Salary) VALUES("${data.id}","${data.title}", "${data.gender}", ${data.department}, "${data.email}", "${data.mobile_no}", "${data.date}",  ${data.currentDesignation}, ${data.previousDesignation}, "${experience}", "${data.qualify}", ${data.year_of_course}, "${retired}", "${data.wef_date}", ${data.salary}, "${remarks}", "${data.head_engineer}", "${data.director}", ${data.project}, ${data.deduction},${basic}); INSERT INTO salary (salary,status,wef_date,employee_id) VALUES(${data.salary}, "current", "${data.date}", "${data.id}")`;
     const response = await queryDatabase(query);
     res.status(200).json({ message: "Success" });
@@ -502,17 +533,25 @@ app.post("/add/project", async (req, res) => {
 app.post("/add/hra", async (req, res) => {
   const data = req.body;
   console.log("data", data);
-  const [{oldHRA,DA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
-  const newHRA=parseInt(data.name);
-  const olddivider=(100+oldHRA+DA)/100;
-  const newdivider=(100+newHRA+DA)/100;
-  const empData=await queryDatabase(`SELECT id,Basic_Salary FROM employee_data`);
-  empData.forEach(async (record)=>{
-    const basic=record.Basic_Salary;
-    const newSalary=basic*newdivider;
-    await queryDatabase(`UPDATE employee_data SET current_salary=${newSalary} WHERE id="${record.id}"`)
-    await queryDatabase(`UPDATE salary SET salary=${newSalary} WHERE employee_id="${record.id}" AND status="current"`)
-  })
+  const [{ oldHRA, DA }] = await queryDatabase(
+    `SELECT HRA,DA FROM admin_details WHERE admin_id=1`
+  );
+  const newHRA = parseInt(data.name);
+  const olddivider = (100 + oldHRA + DA) / 100;
+  const newdivider = (100 + newHRA + DA) / 100;
+  const empData = await queryDatabase(
+    `SELECT id,Basic_Salary FROM employee_data`
+  );
+  empData.forEach(async (record) => {
+    const basic = record.Basic_Salary;
+    const newSalary = basic * newdivider;
+    await queryDatabase(
+      `UPDATE employee_data SET current_salary=${newSalary} WHERE id="${record.id}"`
+    );
+    await queryDatabase(
+      `UPDATE salary SET salary=${newSalary} WHERE employee_id="${record.id}" AND status="current"`
+    );
+  });
   const response = await queryDatabase(
     `UPDATE admin_details SET HRA=${newHRA} WHERE admin_id=1;`
   );
@@ -522,17 +561,25 @@ app.post("/add/hra", async (req, res) => {
 app.post("/add/da", async (req, res) => {
   const data = req.body;
   console.log("data", data);
-  const [{HRA,oldDA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
-  const newDA=parseInt(data.name);
-  const olddivider=(100+HRA+oldDA)/100;
-  const newdivider=(100+HRA+newDA)/100;
-  const empData=await queryDatabase(`SELECT id,Basic_Salary FROM employee_data`);
-  empData.forEach(async (record)=>{
-    const basic=record.Basic_Salary;
-    const newSalary=basic*newdivider;
-    await queryDatabase(`UPDATE employee_data SET current_salary=${newSalary} WHERE id="${record.id}"`)
-    await queryDatabase(`UPDATE salary SET salary=${newSalary} WHERE employee_id="${record.id}" AND status="current"`)
-  })
+  const [{ HRA, oldDA }] = await queryDatabase(
+    `SELECT HRA,DA FROM admin_details WHERE admin_id=1`
+  );
+  const newDA = parseInt(data.name);
+  const olddivider = (100 + HRA + oldDA) / 100;
+  const newdivider = (100 + HRA + newDA) / 100;
+  const empData = await queryDatabase(
+    `SELECT id,Basic_Salary FROM employee_data`
+  );
+  empData.forEach(async (record) => {
+    const basic = record.Basic_Salary;
+    const newSalary = basic * newdivider;
+    await queryDatabase(
+      `UPDATE employee_data SET current_salary=${newSalary} WHERE id="${record.id}"`
+    );
+    await queryDatabase(
+      `UPDATE salary SET salary=${newSalary} WHERE employee_id="${record.id}" AND status="current"`
+    );
+  });
   const response = await queryDatabase(
     `UPDATE admin_details SET DA=${parseInt(data.name)} WHERE admin_id=1;`
   );
@@ -579,9 +626,11 @@ app.patch("/show/:id", async (req, res) => {
     if (data.years) {
       experience += `${data.years} years`;
     }
-    const [{HRA,DA}]=await queryDatabase(`SELECT HRA,DA FROM admin_details WHERE admin_id=1`);
-    const divider=(100+HRA+DA)/100; 
-    const basic = Math.round(data.salary/ divider);
+    const [{ HRA, DA }] = await queryDatabase(
+      `SELECT HRA,DA FROM admin_details WHERE admin_id=1`
+    );
+    const divider = (100 + HRA + DA) / 100;
+    const basic = Math.round(data.salary / divider);
     const query = `UPDATE employee_data SET name = "${data.title}" ,gender ="${data.gender}" ,department_id = ${data.department}, email = "${data.email}" , mobile_no = "${data.mobile_no}", date_of_joining = "${data.date}" , current_designation_id = ${data.currentDesignation} , previous_designation_id = ${data.previousDesignation}, previous_experience = "${experience}" ,qualification = "${data.qualify}" ,year_of_course_completion = ${data.year_of_course}, retired = "${retired}" , wef = "${data.wef_date}" , current_salary = ${data.salary}, remarks = "${remarks}" , head_engineer = "${data.head_engineer}" , director = "${data.director}" ,project_id = ${data.project}, deduction = ${data.deduction},Basic_Salary=${basic} WHERE id="${data.id}"; UPDATE salary set salary=${data.salary}, wef_date="${data.wef_date}" WHERE employee_id="${data.id}";`;
     console.log(query);
     const response = await queryDatabase(query);

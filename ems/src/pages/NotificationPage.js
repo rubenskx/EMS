@@ -8,7 +8,12 @@ function NotificationPage() {
   return (
     <Suspense fallback={<p style={{ textAlign: "center" }}>Loading...</p>}>
       <Await resolve={notifs}>
-        {(loadedNotifs) => <Notifications notifs={loadedNotifs} />}
+        {(loadedNotifs) => (
+          <Notifications
+            notifs={loadedNotifs.array}
+            employees={loadedNotifs.recentlyInformed}
+          />
+        )}
       </Await>
     </Suspense>
   );
@@ -39,8 +44,7 @@ async function loadNotifs() {
     );
   } else {
     const resData = await response.json();
-    console.log("array",resData.array);
-    return resData.array;
+    return resData;
   }
 }
 

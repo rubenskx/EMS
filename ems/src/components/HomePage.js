@@ -49,7 +49,7 @@ const HomePage = ({ results }) => {
             <MedianSalary salary={results.avg_salary[0].count} />
           </div>
           <div className="col-sm-4">
-            <RetiredEmployees retired={results.retired[0].count} />
+            <RetiredEmployees retired={results.hra[0]} />
           </div>
         </div>
         <div className="row mt-5">

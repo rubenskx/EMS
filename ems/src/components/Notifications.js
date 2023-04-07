@@ -9,8 +9,10 @@ import { HiTrash } from "react-icons/hi";
 import Spinner from "../UI/Spinner";
 import Flash from "../UI/Flash";
 import styles from "./SearchForm.module.css";
+import RecentEmployees from "./RecentEmployee";
 
-const Notifications = ({ notifs }) => {
+const Notifications = ({ notifs, employees }) => {
+  console.log("Employees:",employees);
   const [overlay, setOverlay] = useState(-1);
   const [errors, setErrors] = useState("");
   const [spinner, setSpinner] = useState(false);
@@ -27,6 +29,7 @@ const Notifications = ({ notifs }) => {
   const closeFlash = () => {
     console.log("hello!!");
     setErrors("");
+    setFlashMessage("");
   }
   const emailGenerator = async (array) => {
     const message = document.getElementById("message").value;
@@ -80,7 +83,7 @@ const Notifications = ({ notifs }) => {
   };
   return (
     <>
-      {flashMessage !== "" && <Flash type="warn" onClick={closeFlash}>{flashMessage}</Flash>}
+      {flashMessage !== "" && <Flash handleFlashClick={closeFlash}>{flashMessage}</Flash>}
       <div className="container">
         {errors !== "" && <p style={{ color: "red" }}>{errors}</p>}
         {notifs.length === 0 && (
@@ -144,6 +147,9 @@ const Notifications = ({ notifs }) => {
             )}
           </>
         ))}
+        <h3 className="mt-5">Recently Informed Employees</h3>
+        <p>Employees recently informed through email.</p>
+        <RecentEmployees employees={employees}/>
       </div>
     </>
   );
