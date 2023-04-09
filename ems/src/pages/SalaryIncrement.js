@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Flash from "../UI/Flash";
 import Spinner from "../UI/Spinner";
 import { TbArrowBackUp } from "react-icons/tb";
+import Pointer from "../UI/Pointer";
 const SalaryIncrement = (props) => {
   const [errors, setErrors] = useState("");
   const [data, setData] = useState([]);
@@ -128,7 +129,9 @@ const SalaryIncrement = (props) => {
     <>
       {data.length > 0 && (
         <div className="mx-5 mt-2" style={{ cursor: "pointer" }}>
-          <TbArrowBackUp size={40} onClick={() => backButtonHandler()} />
+          <Pointer>
+            <TbArrowBackUp size={40} onClick={() => backButtonHandler()} />
+          </Pointer>
         </div>
       )}
       {errors !== "" && (
@@ -140,7 +143,10 @@ const SalaryIncrement = (props) => {
         <Card>
           <div>
             <h3>Enter a range for Salary Incrementation</h3>
-            <p>Please enter a valid range of dates to find employees whose WEF dates fall in this range.</p>
+            <p>
+              Please enter a valid range of dates to find employees whose WEF
+              dates fall in this range.
+            </p>
             <div className="row mt-5">
               <p className="col-lg-4 text-center">
                 <label htmlFor="date_before">

@@ -8,6 +8,7 @@ import { TbArrowBackUp } from "react-icons/tb";
 import Card from "../UI/Card";
 import Spinner from "../UI/Spinner";
 import Flash from "../UI/Flash";
+import Pointer from "../UI/Pointer";
 const XLSX = require("xlsx");
 
 const ExcelUpload = (props) => {
@@ -103,17 +104,26 @@ const ExcelUpload = (props) => {
   };
   return (
     <Fragment>
-      {error!== "" && <Flash type="warn" handleFlashClick={closeFlash}>{error}</Flash>}
+      {error !== "" && (
+        <Flash type="warn" handleFlashClick={closeFlash}>
+          {error}
+        </Flash>
+      )}
       {exceldata.length > 0 && (
         <div className="mx-5 mt-2" style={{ cursor: "pointer" }}>
-          <TbArrowBackUp size={40} onClick={() => backButtonHandler()} />
+          <Pointer>
+            <TbArrowBackUp size={40} onClick={() => backButtonHandler()} />
+          </Pointer>
         </div>
       )}
       <div className="container mt-5">
         <Card>
           <h3>Download the template before uploading onto the website.</h3>
-          <p>Please make sure that the headers of the template is not modified.
-            All the designations,projects and departments must be added manually through individual upload before using this feature.</p>
+          <p>
+            Please make sure that the headers of the template is not modified.
+            All the designations, projects and departments must be added manually
+            through individual upload before using this feature.
+          </p>
           <div style={{ textAlign: "right" }}>
             <ButtonUI color="green" onClick={() => templateLoader()}>
               Download

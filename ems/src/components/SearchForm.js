@@ -11,6 +11,7 @@ import RecentEmployees from "./RecentEmployee";
 import ButtonUI from "../UI/ButtonUI";
 import Select from "react-select";
 import options from "../utils/fieldOptions";
+import Pointer from "../UI/Pointer";
 import ExportExcel from "../utils/ExportExcel";
 import { TbArrowBackUp } from "react-icons/tb";
 
@@ -59,7 +60,9 @@ function SearchForm({ method, event, formdata }) {
       {data && data.result && data.result.data.length && (
         <>
           <div className="mt-3 mx-4">
-            <TbArrowBackUp size={40} onClick={() => backButtonHandler()} />
+            <Pointer>
+              <TbArrowBackUp size={40} onClick={() => backButtonHandler()} />
+            </Pointer>
           </div>
           <div className="container mt-3">
             <div>
