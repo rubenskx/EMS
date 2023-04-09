@@ -34,6 +34,8 @@ const RecentEmployees = (props) => {
               <th>Last Informed</th>
               <th>Contract Renewal Date</th>
               <th>Probation Date</th>
+              <th>HRA % Value</th>
+              <th>DA % Value</th>
               {props.addArray && props.addArray.map((ele) => <th>{ele}</th>)}
               {props.checked && <th>Checked?</th>}
             </tr>
@@ -82,6 +84,8 @@ const RecentEmployees = (props) => {
                 <td>{ele.last_informed ? ele.last_informed.substring(0, 10) : " - "}</td>
                 <td>{ele.contract_renewal ? ele.contract_renewal.substring(0, 10) : " - "}</td>
                 <td>{ele.probation_date ? ele.probation_date.substring(0, 10) : " - "}</td>
+                <td>{ele.hra}</td>
+                <td>{ele.da}</td>
                 {props.addArray &&
                   props.addArray.map((keys) => <td>{ele[keys]}</td>)}
                 {props.checked && (

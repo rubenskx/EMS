@@ -137,13 +137,13 @@ const ShowEmployee = (props) => {
             <div className="col-lg-3" style={{ paddingLeft: "50px" }}>
               <div>
                 <label htmlFor="da" className={classes.bold + " mt-3"}>
-                  DA %
+                  DA Salary Value
                 </label>
                 <div>Rs. {Math.round((emp.current_salary / 1.86) * 0.76)}</div>
               </div>
               <div>
                 <label htmlFor="hra" className={classes.bold + " mt-3"}>
-                  HRA %
+                  HRA Salary Value
                 </label>
                 <div>Rs.{Math.round((emp.current_salary / 1.86) * 0.1)}</div>
               </div>
@@ -210,6 +210,28 @@ const ShowEmployee = (props) => {
                   {emp.probation_date
                     ? emp.probation_date.substring(0, 10)
                     : "N/A"}
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="contract_renewal"
+                  className={classes.bold + " mt-3"}
+                >
+                  HRA %
+                </label>
+                <div>
+                  {emp.hra}
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="contract_renewal"
+                  className={classes.bold + " mt-3"}
+                >
+                  DA %
+                </label>
+                <div>
+                  {emp.da}
                 </div>
               </div>
             </div>
