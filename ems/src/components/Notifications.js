@@ -86,6 +86,7 @@ const Notifications = ({ notifs, employees }) => {
       {flashMessage !== "" && <Flash handleFlashClick={closeFlash}>{flashMessage}</Flash>}
       <div className="container">
         {errors !== "" && <p style={{ color: "red" }}>{errors}</p>}
+        <h3 className="mt-5">Notifications</h3>
         {notifs.length === 0 && (
           <p className="text-center mt-5">
             There are no notifications to show currently.

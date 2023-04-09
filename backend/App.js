@@ -45,24 +45,43 @@ app.post("/login", async (req, res) => {
   }
 });
 
-function runQuery() {
-  const date = new Date();
-  const day = date.getDate();
-  const todayDate = new Date().toISOString().slice(0, 10);
-  const query = `SELECT * FROM employee_data WHERE wef BETWEEN "${todayDate}" AND DATE_ADD("${todayDate}", INTERVAL 30 DAY)`;
-  console.log(query);
-  if (day === 15 || day === 28) {
-    connection.query(
-      `INSERT INTO notifications (query,type) VALUES (${query}, "salary incrementation");`,
-      (error, results, fields) => {
-        if (error) {
-          return;
-        }
-        console.log("Query executed successfully!");
-      }
+async function runQuery() {
+  try {
+    const date = new Date();
+    const day = date.getDate();
+    const todayDate = new Date().toISOString().slice(0, 10);
+    const wef = await queryDatabase(
+      `SELECT * FROM employee_data WHERE wef BETWEEN "${todayDate}" AND DATE_ADD("${todayDate}", INTERVAL 30 DAY)`
     );
-  } else {
-    console.log("Not the 15th or 28th day of the month.");
+    const contract = await queryDatabase(
+      `SELECT * FROM employee_data WHERE contract_renewal BETWEEN "${todayDate}" AND DATE_ADD("${todayDate}", INTERVAL 30 DAY)`
+    );
+    const probation = await queryDatabase(
+      `SELECT * FROM employee_data WHERE probation_date BETWEEN "${todayDate}" AND DATE_ADD("${todayDate}", INTERVAL 30 DAY)`
+    );
+    console.log(wef, contract, probation);
+
+    if (day === 15 || day === 28) {
+      if (wef.length) {
+        const response = await queryDatabase(
+          `INSERT INTO notifications (query,type) VALUES (${query}, "salary incrementation");`
+        );
+      }
+      if (probation.length) {
+        const response = await queryDatabase(
+          `INSERT INTO notifications (query,type) VALUES (${query}, "ending probation period");`
+        );
+      }
+      if (contract.length) {
+        const response = await queryDatabase(
+          `INSERT INTO notifications (query,type) VALUES (${query}, "contract renewal");`
+        );
+      }
+    } else {
+      console.log("Not the 15th or 28th day of the month.");
+    }
+  } catch (err) {
+    console.log(err);
   }
 }
 
@@ -155,6 +174,12 @@ app.post("/search-form", async (req, res) => {
   let qprojectname = "";
   let qremarks = "";
   let qwef_date = "";
+  let qjoining_date_lesser = "";
+  let qjoining_date_greater = "";
+  let qcontract_renewal_lesser = "";
+  let qcontract_renewal_greater = "";
+  let qprobation_date_lesser = "";
+  let qprobation_date_greater = "";
   let qsalary_greater = "";
   let qsalary_lesser = "";
   let qexperience = "";
@@ -162,20 +187,33 @@ app.post("/search-form", async (req, res) => {
   rdata = req.body;
   console.log(rdata);
 
+  if(rdata.date_joining_greater!=""){
+    qjoining_date_greater = `AND employee_data.date_of_joining >= '${rdata.date_joining_greater}'`
+  }
+  if (rdata.date_joining_lesser!="") {
+    qjoining_date_lesser = `AND employee_data.date_of_joining <= '${rdata.date_joining_lesser}'`;
+  }
+  if (rdata.date_contract_greater!="") {
+    qcontract_renewal_greater = `AND employee_data.contract_renewal >= '${rdata.date_contract_greater}'`;
+  }
+  if (rdata.date_contract_lesser != "") {
+    qcontract_renewal_lesser = `AND employee_data.contract_renewal <= '${rdata.date_contract_lesser}'`;
+  }
+  
+  if (rdata.date_probation_greater != "") {
+    qprobation_date_greater = `AND employee_data.probation_date >= '${rdata.date_probation_greater}'`;
+  }
+  if (rdata.date_probation_lesser != "") {
+    qprobation_date_lesser = `AND employee_data.probation_date <= '${rdata.date_probation_lesser}'`;
+  }
+  
+
   if (rdata.title != "") {
     qtitle = ` employee_data.name LIKE '%${rdata.title}%'`;
   } else {
     qtitle = " employee_data.name LIKE '%'";
   }
-  if (rdata.data != "") {
-    if (rdata.otd) {
-      qdate = ` AND date_of_joining = '${rdata.date}'`;
-    } else if (rdata.btd) {
-      qdate = ` AND date_of_joining <= '${rdata.date}'`;
-    } else {
-      qdate = ` AND date_of_joining >= '${rdata.date}'`;
-    }
-  }
+  
   if (rdata.director != "") {
     qdirector = ` AND director LIKE '%${rdata.director}%'`;
   }
@@ -224,7 +262,7 @@ app.post("/search-form", async (req, res) => {
   const fixedQuery = `AND t.designation_id=previous_designation_id AND s.designation_id=current_designation_id AND employee_data.department_id = department.department_id AND project.project_id = employee_data.project_id
      ;`;
   let query = `SELECT *, employee_data.name as emp_name,t.designation_name as previous_designation, s.designation_name as current_designation FROM employee_data,department,designation as t,designation as s, project 
-  WHERE ${qtitle} ${qgender} ${qdate} ${qcurrentdesignation} ${qpreviousdesignation} 
+  WHERE ${qtitle} ${qgender} ${qcurrentdesignation} ${qpreviousdesignation} 
   ${qretired} ${qqualification} ${qdepartment} ${qdirector} ${qhead} ${qprojectname} ${qremarks} 
   ${qwef_date} ${qsalary_greater} ${qsalary_lesser} ${qexperience} ${fixedQuery}`;
   console.log(query);
@@ -263,11 +301,11 @@ app.get("/home", async (req, res) => {
 app.get("/notifications", async (req, res) => {
   const notifications = await queryDatabase("SELECT * from notifications;");
   const todayDate = new Date().toISOString().slice(0, 10);
-  "SELECT department.name as name, employee_data.name as emp_name, t.designation_name as previous_designation, s.designation_name as current_designation, employee_data.*, project.project_name as project_name FROM employee_data, department,designation as s, designation as t, project where employee_data.department_id = department.department_id AND employee_data.current_designation_id = s.designation_id AND employee_data.previous_designation_id = t.designation_id AND employee_data.project_id = project.project_id and ";
+  ("SELECT department.name as name, employee_data.name as emp_name, t.designation_name as previous_designation, s.designation_name as current_designation, employee_data.*, project.project_name as project_name FROM employee_data, department,designation as s, designation as t, project where employee_data.department_id = department.department_id AND employee_data.current_designation_id = s.designation_id AND employee_data.previous_designation_id = t.designation_id AND employee_data.project_id = project.project_id and ");
   const recentlyInformed = await queryDatabase(
     `SELECT department.name as name, employee_data.name as emp_name, t.designation_name as previous_designation, s.designation_name as current_designation, employee_data.*, project.project_name as project_name FROM employee_data, department,designation as s, designation as t, project where employee_data.department_id = department.department_id AND employee_data.current_designation_id = s.designation_id AND employee_data.previous_designation_id = t.designation_id AND employee_data.project_id = project.project_id and last_informed BETWEEN "2023-04-07" AND DATE_ADD("2023-04-07", INTERVAL 30 DAY)`
   );
-  
+
   let array = [];
   for (let notification of notifications) {
     console.log(notification.query);
@@ -279,7 +317,7 @@ app.get("/notifications", async (req, res) => {
     });
   }
   console.log(array);
-  res.status(200).json({ recentlyInformed , message: "Success", array });
+  res.status(200).json({ recentlyInformed, message: "Success", array });
 });
 
 app.get("/increment", async (req, res) => {
@@ -416,7 +454,9 @@ function sendMail(data, message) {
       .toISOString()
       .slice(0, 10);
     console.log("hi");
-    const response = await queryDatabase(`UPDATE employee_data SET last_informed="${todayDate}" WHERE id="${data.id}"`);
+    const response = await queryDatabase(
+      `UPDATE employee_data SET last_informed="${todayDate}" WHERE id="${data.id}"`
+    );
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {

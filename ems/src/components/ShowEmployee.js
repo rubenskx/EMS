@@ -8,9 +8,9 @@ import ButtonUI from "../UI/ButtonUI";
 import { useState } from "react";
 const ShowEmployee = (props) => {
   const navigate = useNavigate();
-  const emp=props.results.employeeData[0];
-  const salaryDetails=props.results.salary_details
-  console.log(emp,salaryDetails);
+  const emp = props.results.employeeData[0];
+  const salaryDetails = props.results.salary_details;
+  console.log(emp, salaryDetails);
   const [toggler, setToggler] = useState(false);
 
   const editPageGenerator = (id) => {
@@ -18,20 +18,20 @@ const ShowEmployee = (props) => {
   };
 
   const deleteEmployeeGenerator = async (id) => {
-    let url = "http://localhost:7000/show/" + id; 
+    let url = "http://localhost:7000/show/" + id;
     const response = await fetch(url, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
     });
-    if(!response.ok || response.status === 422){
+    if (!response.ok || response.status === 422) {
       console.log("error data!");
       return;
     }
 
     navigate("/");
-  }
+  };
 
   return (
     <>
@@ -174,7 +174,10 @@ const ShowEmployee = (props) => {
             </div>
             <div className="col-lg-3" style={{ paddingLeft: "50px" }}>
               <div>
-                <label htmlFor="last_informed" className={classes.bold + " mt-3"}>
+                <label
+                  htmlFor="last_informed"
+                  className={classes.bold + " mt-3"}
+                >
                   Last Informed
                 </label>
                 <div>

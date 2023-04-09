@@ -28,7 +28,7 @@ function SearchForm({ method, event, formdata }) {
   }
 
   const backButtonHandler = () => {
-      navigate("/search-form");
+    navigate("/search-form");
   };
 
   const excelGenerator = () => {
@@ -89,6 +89,7 @@ function SearchForm({ method, event, formdata }) {
         <Form className={classes.form} method={"POST"}>
           <Card>
             <h2>Search</h2>
+            <p>Fill in this form with necessary search parameters.</p>
             <p>
               <label htmlFor="title">Name (Keywords) </label>
               <input
@@ -133,51 +134,74 @@ function SearchForm({ method, event, formdata }) {
                 ))}
               </select>
             </p>
-            <div className="row">
-              <p className="col-lg-8">
-                <label htmlFor="date">Date Of Joining</label>
-                <input
-                  id="date"
-                  type="date"
-                  name="date"
-                  defaultValue={event ? event.date : ""}
-                />
-              </p>
-              <p className="col-lg-4">
-                Employees joined:
-                <div class="form-check">
+            <div>
+              Enter a range for Date of Joining
+              <div className="row">
+                <p className="col-lg-6">
+                  <label htmlFor="date_joining_greater">Greater than</label>
                   <input
-                    class="form-check-input"
-                    type="radio"
-                    name="btd"
-                    id="btd"
-                    style={{ width: "10%" }}
+                    id="date_joining_greater"
+                    type="date"
+                    name="date_joining_greater"
+                    defaultValue={event ? event.date : ""}
                   />
-                  <label class="form-check-label" for="btd">
-                    Before this date
-                  </label>
+                </p>
+                <p className="col-lg-6">
+                  <label htmlFor="date_joining_lesser">Lesser than</label>
                   <input
-                    class="form-check-input"
-                    type="radio"
-                    name="atd"
-                    id="atd"
-                    style={{ width: "10%" }}
+                    id="date_joining_lesser"
+                    type="date"
+                    name="date_joining_lesser"
+                    defaultValue={event ? event.date : ""}
                   />
-                  <label class="form-check-label" for="atd">
-                    After this date
-                  </label>
+                </p>
+              </div>
+            </div>
+            <div>
+              Enter a range for Contract Renewal
+              <div className="row">
+                <p className="col-lg-6">
+                  <label htmlFor="date_contract_greater">Greater than</label>
                   <input
-                    class="form-check-input"
-                    type="radio"
-                    name="otd"
-                    id="otd"
-                    style={{ width: "10%" }}
+                    id="date_contract_greater"
+                    type="date"
+                    name="date_contract_greater"
+                    defaultValue={event ? event.date : ""}
                   />
-                  <label class="form-check-label" for="otd">
-                    On this date
-                  </label>
-                </div>
-              </p>
+                </p>
+                <p className="col-lg-6">
+                  <label htmlFor="date_contract_lesser">Lesser than</label>
+                  <input
+                    id="date_contract_lesser"
+                    type="date"
+                    name="date_contract_lesser"
+                    defaultValue={event ? event.date : ""}
+                  />
+                </p>
+              </div>
+            </div>
+            <div>
+              Enter a range for Probation Period
+              <div className="row">
+                <p className="col-lg-6">
+                  <label htmlFor="date_probation_greater">Greater than</label>
+                  <input
+                    id="date_probation_greater"
+                    type="date"
+                    name="date_probation_greater"
+                    defaultValue={event ? event.date : ""}
+                  />
+                </p>
+                <p className="col-lg-6">
+                  <label htmlFor="date_probation_lesser">Lesser than</label>
+                  <input
+                    id="date_probation_lesser"
+                    type="date"
+                    name="date_probation_lesser"
+                    defaultValue={event ? event.date : ""}
+                  />
+                </p>
+              </div>
             </div>
             <p>
               <label htmlFor="previousDesignation">Previous Designation</label>

@@ -140,6 +140,7 @@ const SalaryIncrement = (props) => {
         <Card>
           <div>
             <h3>Enter a range for Salary Incrementation</h3>
+            <p>Please enter a valid range of dates to find employees whose WEF dates fall in this range.</p>
             <div className="row mt-5">
               <p className="col-lg-4 text-center">
                 <label htmlFor="date_before">
