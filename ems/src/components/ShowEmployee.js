@@ -186,6 +186,32 @@ const ShowEmployee = (props) => {
                     : "NULL"}
                 </div>
               </div>
+              <div>
+                <label
+                  htmlFor="contract_renewal"
+                  className={classes.bold + " mt-3"}
+                >
+                  Contract Renewal
+                </label>
+                <div>
+                  {emp.contract_renewal
+                    ? emp.contract_renewal.substring(0, 10)
+                    : "NULL"}
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="contract_renewal"
+                  className={classes.bold + " mt-3"}
+                >
+                  Probation Date
+                </label>
+                <div>
+                  {emp.probation_date
+                    ? emp.probation_date.substring(0, 10)
+                    : "N/A"}
+                </div>
+              </div>
             </div>
           </div>
         </Card>

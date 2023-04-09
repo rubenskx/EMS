@@ -94,6 +94,35 @@ app.post("/excel", async (req, res) => {
   const data = req.body;
   var errorString = "";
   for (let i = 0; i < data.length; i++) {
+    const [deptRes, currDesigRes, prevDesigRes, projRes] = await Promise.all([
+      queryDatabase(
+        `SELECT department_id FROM department where name="${data[i].department}";`
+      ),
+      queryDatabase(
+        `SELECT designation_id FROM designation where designation_name="${data[i].current_designation}";`
+      ),
+      queryDatabase(
+        `SELECT designation_id FROM designation where designation_name="${data[i].previous_designation}";`
+      ),
+      queryDatabase(
+        `SELECT project_id from project where project_name="${data[i].project}";`
+      ),
+    ]);
+    console.log(deptRes, currDesigRes, prevDesigRes, projRes);
+    if (
+      !(
+        deptRes.length &&
+        currDesigRes.length &&
+        prevDesigRes.length &&
+        projRes.length
+      )
+    ) {
+      return res.status(401).json({
+        message: `There is some issue with the data provided with employee id - ${data[i].id}. Please verify and try again.`,
+      });
+    }
+  }
+  for (let i = 0; i < data.length; i++) {
     try {
       const [deptRes, currDesigRes, prevDesigRes, projRes] = await Promise.all([
         queryDatabase(
@@ -187,33 +216,32 @@ app.post("/search-form", async (req, res) => {
   rdata = req.body;
   console.log(rdata);
 
-  if(rdata.date_joining_greater!=""){
-    qjoining_date_greater = `AND employee_data.date_of_joining >= '${rdata.date_joining_greater}'`
+  if (rdata.date_joining_greater != "") {
+    qjoining_date_greater = `AND employee_data.date_of_joining >= '${rdata.date_joining_greater}'`;
   }
-  if (rdata.date_joining_lesser!="") {
+  if (rdata.date_joining_lesser != "") {
     qjoining_date_lesser = `AND employee_data.date_of_joining <= '${rdata.date_joining_lesser}'`;
   }
-  if (rdata.date_contract_greater!="") {
+  if (rdata.date_contract_greater != "") {
     qcontract_renewal_greater = `AND employee_data.contract_renewal >= '${rdata.date_contract_greater}'`;
   }
   if (rdata.date_contract_lesser != "") {
     qcontract_renewal_lesser = `AND employee_data.contract_renewal <= '${rdata.date_contract_lesser}'`;
   }
-  
+
   if (rdata.date_probation_greater != "") {
     qprobation_date_greater = `AND employee_data.probation_date >= '${rdata.date_probation_greater}'`;
   }
   if (rdata.date_probation_lesser != "") {
     qprobation_date_lesser = `AND employee_data.probation_date <= '${rdata.date_probation_lesser}'`;
   }
-  
 
   if (rdata.title != "") {
     qtitle = ` employee_data.name LIKE '%${rdata.title}%'`;
   } else {
     qtitle = " employee_data.name LIKE '%'";
   }
-  
+
   if (rdata.director != "") {
     qdirector = ` AND director LIKE '%${rdata.director}%'`;
   }
@@ -264,7 +292,7 @@ app.post("/search-form", async (req, res) => {
   let query = `SELECT *, employee_data.name as emp_name,t.designation_name as previous_designation, s.designation_name as current_designation FROM employee_data,department,designation as t,designation as s, project 
   WHERE ${qtitle} ${qgender} ${qcurrentdesignation} ${qpreviousdesignation} 
   ${qretired} ${qqualification} ${qdepartment} ${qdirector} ${qhead} ${qprojectname} ${qremarks} 
-  ${qwef_date} ${qsalary_greater} ${qsalary_lesser} ${qexperience} ${fixedQuery}`;
+  ${qwef_date} ${qsalary_greater} ${qsalary_lesser} ${qexperience} ${qjoining_date_lesser} ${qjoining_date_greater} ${qcontract_renewal_greater} ${qcontract_renewal_lesser} ${qprobation_date_lesser} ${qprobation_date_greater} ${fixedQuery}`;
   console.log(query);
   data = await queryDatabase(query);
 

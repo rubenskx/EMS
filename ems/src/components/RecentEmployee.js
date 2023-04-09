@@ -79,8 +79,8 @@ const RecentEmployees = (props) => {
                     : ele.current_designation}
                 </td>
                 <td>{ele.Basic_Salary}</td>
-                <td>{ele.last_informed.substring(0, 10)}</td>
-                <td>{ele.contract_renewal.substring(0, 10)}</td>
+                <td>{ele.last_informed ? ele.last_informed.substring(0, 10) : " - "}</td>
+                <td>{ele.contract_renewal ? ele.contract_renewal.substring(0, 10) : " - "}</td>
                 <td>{ele.probation_date ? ele.probation_date.substring(0, 10) : " - "}</td>
                 {props.addArray &&
                   props.addArray.map((keys) => <td>{ele[keys]}</td>)}
