@@ -49,7 +49,7 @@ const ExcelUpload = (props) => {
   const closeFlash = () => {
     setError("");
     return;
-  }
+  };
   const sendDataHandler = async () => {
     console.log("hello");
     console.log(exceldata);
@@ -121,8 +121,8 @@ const ExcelUpload = (props) => {
           <h3>Download the template before uploading onto the website.</h3>
           <p>
             Please make sure that the headers of the template is not modified.
-            All the designations, projects and departments must be added manually
-            through individual upload before using this feature.
+            All the designations, projects and departments must be added
+            manually through individual upload before using this feature.
           </p>
           <div style={{ textAlign: "right" }}>
             <ButtonUI color="green" onClick={() => templateLoader()}>
