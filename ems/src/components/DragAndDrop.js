@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classes from "./DragAndDrop.module.css";
 import Card from "../UI/Card"
 import { useState } from "react";
 const DragAndDrop = (props) => {
+    useEffect(() => {
+      if(props.undo.length === 0)
+        setAdded(false);
+    },[props.undo])
+
     const [added, setAdded] = useState(false);
     const [fileName, setFileName] = useState("");
     const dragOver = (e) => {

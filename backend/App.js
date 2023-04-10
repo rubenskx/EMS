@@ -18,7 +18,6 @@ const connection = mysql.createConnection({
   password: "",
   database: "ems",
   multipleStatements: "true", //this is required for querying multiple statements in mysql
-  port:8111
 });
 
 connection.connect((err) => {
@@ -565,8 +564,8 @@ app.post("/upload", async (req, res) => {
     const [{ HRA, DA }] = await queryDatabase(
       `SELECT HRA,DA FROM admin_details WHERE admin_id=1`
     );
-    const hra=data.hra === ""?HRA:parseInt(data.hra)
-    const da=data.da===""?DA:parseInt(data.da)
+    const hra = data.hra === "" ? HRA : parseInt(data.hra);
+    const da = data.da === "" ? DA : parseInt(data.da);
     const divider = (100 + hra + da) / 100;
     const basic = Math.round(data.salary / divider);
     const query = `INSERT INTO employee_data (id,name,gender,department_id,email,mobile_no,date_of_joining,current_designation_id,previous_designation_id,previous_experience,qualification,year_of_course_completion,retired,wef,current_salary,remarks,head_engineer,director,project_id,deduction,Basic_Salary,hra,da) VALUES("${data.id}","${data.title}", "${data.gender}", ${data.department}, "${data.email}", "${data.mobile_no}", "${data.date}",  ${data.currentDesignation}, ${data.previousDesignation}, "${experience}", "${data.qualify}", ${data.year_of_course}, "${retired}", "${data.wef_date}", ${data.salary}, "${remarks}", "${data.head_engineer}", "${data.director}", ${data.project}, ${data.deduction},${basic},${hra},${da}); INSERT INTO salary (salary,status,wef_date,employee_id) VALUES(${data.salary}, "current", "${data.date}", "${data.id}")`;
@@ -704,12 +703,12 @@ app.patch("/show/:id", async (req, res) => {
     const [{ HRA, DA }] = await queryDatabase(
       `SELECT HRA,DA FROM admin_details WHERE admin_id=1`
     );
-    const hra=data.hra === ""?HRA:parseInt(data.hra)
-    const da=data.da===""?DA:parseInt(data.da)
+    const hra = data.hra === "" ? HRA : parseInt(data.hra);
+    const da = data.da === "" ? DA : parseInt(data.da);
     const divider = (100 + HRA + DA) / 100;
     const basic = Math.round(data.salary / divider);
     const divider2 = (100 + hra + da) / 100;
-    const salary=basic*divider2
+    const salary = basic * divider2;
     const query = `UPDATE employee_data SET name = "${data.title}" ,gender ="${data.gender}" ,department_id = ${data.department}, email = "${data.email}" , mobile_no = "${data.mobile_no}", date_of_joining = "${data.date}" , current_designation_id = ${data.currentDesignation} , previous_designation_id = ${data.previousDesignation}, previous_experience = "${experience}" ,qualification = "${data.qualify}" ,year_of_course_completion = ${data.year_of_course}, retired = "${retired}" , wef = "${data.wef_date}" , current_salary = ${salary}, remarks = "${remarks}" , head_engineer = "${data.head_engineer}" , director = "${data.director}" ,project_id = ${data.project}, deduction = ${data.deduction},Basic_Salary=${basic},hra=${hra},da=${da} WHERE id="${data.id}"; UPDATE salary set salary=${salary}, wef_date="${data.wef_date}" WHERE employee_id="${data.id}" AND status="current";`;
     console.log(query);
     const response = await queryDatabase(query);
@@ -725,7 +724,7 @@ app.put("/show/:id", async (req, res) => {
     const { id } = req.params;
     console.log(id, "id");
     const result = await queryDatabase(
-      `SET FOREIGN_KEY_CHECKS = 0; DELETE FROM employee_data where id="${id}";`
+      `SET FOREIGN_KEY_CHECKS = 0; DELETE FROM employee_data where id="${id}";DELETE FROM salary where employee_id="${id}";`
     );
     res.status(200).json({ message: "Sucess" });
   } catch (err) {

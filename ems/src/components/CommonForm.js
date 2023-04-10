@@ -54,6 +54,11 @@ const CommonForm = (props) => {
             name="gender"
             class="form-select"
             aria-label="Default select example"
+            defaultValue={
+              props.formdata && props.formdata.employeeData
+                ? props.formdata.employeeData[0].gender
+                : ""
+            }
             required
           >
             <option disabled selected value>
@@ -373,44 +378,42 @@ const CommonForm = (props) => {
             ))}
           </select>
         </p>
-        <div className={classes.adjust + " form-check col-lg-4"}>
-            <p>
-              <label htmlFor="deduction" style={{ display: "inline" }}>
-                HRA %:
-              </label>
-              <input
-                name="hra"
-                type="number"
-                class="form-control"
-                id="hra"
-                placeholder="Enter the hra%.."
-                defaultValue={
-                  props.formdata && props.formdata.employeeData
-                    ? props.formdata.employeeData[0].hra
-                    : ""
-                }
-                required
-              />
-            </p>
-            <p>
-              <label htmlFor="deduction" style={{ display: "inline" }}>
-                DA %:
-              </label>
-              <input
-                name="da"
-                type="number"
-                class="form-control"
-                id="da"
-                placeholder="Enter the da%.."
-                defaultValue={
-                  props.formdata && props.formdata.employeeData
-                    ? props.formdata.employeeData[0].da
-                    : ""
-                }
-                required
-              />
-            </p>
-          </div>
+        <p>
+          <label htmlFor="hra" style={{ display: "inline" }}>
+            HRA %:
+          </label>
+          <input
+            name="hra"
+            type="number"
+            class="form-control"
+            id="hra"
+            placeholder="Enter the hra%.."
+            defaultValue={
+              props.formdata && props.formdata.employeeData
+                ? props.formdata.employeeData[0].hra
+                : ""
+            }
+            required
+          />
+        </p>
+        <p>
+          <label htmlFor="da" style={{ display: "inline" }}>
+            DA %:
+          </label>
+          <input
+            name="da"
+            type="number"
+            class="form-control"
+            id="da"
+            placeholder="Enter the da%.."
+            defaultValue={
+              props.formdata && props.formdata.employeeData
+                ? props.formdata.employeeData[0].da
+                : ""
+            }
+            required
+          />
+        </p>
         <div className={classes.actions}>
           <ButtonUI onClick={cancelHandler} disabled={isSubmitting} color="red">
             Cancel

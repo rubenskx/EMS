@@ -130,7 +130,7 @@ const ExcelUpload = (props) => {
             </ButtonUI>
           </div>
         </Card>
-        <DragAndDrop onFileDrop={submitHandler} />
+        <DragAndDrop onFileDrop={submitHandler} undo={exceldata} />
         {spinner && (
           <div className="text-center">
             <Spinner />
